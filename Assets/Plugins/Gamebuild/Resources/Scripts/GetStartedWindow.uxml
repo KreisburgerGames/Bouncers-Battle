@@ -1,0 +1,29 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:GroupBox name="MainWindow" style="width: 298px; height: 100%; align-items: stretch; flex-direction: column; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; margin-left: 5px; margin-right: 5px; margin-top: 3px; margin-bottom: 3px; min-width: 460px; min-height: 339px; max-width: 460px; max-height: 339px;">
+        <ui:ScrollView style="flex-shrink: initial; min-width: auto; min-height: auto; max-height: none; max-width: none;">
+            <ui:VisualElement style="align-items: center; background-color: rgb(14, 14, 14); margin-right: 0; margin-left: -5px;">
+                <ui:IMGUIContainer style="background-image: resource(&apos;Resource Assets/Banners/gamebuild_banner&apos;); height: 91px; width: 309px; flex-shrink: initial; flex-grow: initial; -unity-background-scale-mode: scale-to-fit; min-height: 90px; margin-top: 0; margin-bottom: 0; align-items: stretch; background-color: rgb(14, 14, 14); margin-right: 0; margin-left: 0; cursor: initial;" />
+            </ui:VisualElement>
+            <ui:VisualElement style="justify-content: center; flex-direction: row; width: 100%; align-items: center; min-height: 46px;">
+                <ui:Label text="First time using Gamebuild?&#10;Let&apos;s get started." display-tooltip-when-elided="true" style="height: 46px; width: 80%; -unity-text-align: upper-center; white-space: normal; margin-top: 10px; margin-right: 0; margin-left: 0; font-size: 16px; margin-bottom: 15px; -unity-font-style: bold; align-items: center; justify-content: center; flex-basis: auto; flex-shrink: 0; flex-grow: 0; flex-direction: column; padding-bottom: 0;" />
+            </ui:VisualElement>
+            <ui:Button text="Quick Start Guide" display-tooltip-when-elided="true" name="step4-button" view-data-key="projectlink" style="height: 50px;" />
+            <ui:Button text="Step 1: Setting up your Gamebuild Account" display-tooltip-when-elided="true" name="step1-button" view-data-key="projectlink" style="height: 50px; margin-left: 2px; margin-right: 2px; display: none;" />
+            <ui:Button text="Step 2: Adding the Gamebuild Prefab to your scene" display-tooltip-when-elided="true" name="step2-button" view-data-key="projectlink" style="height: 50px; -unity-text-align: middle-center; display: none;" />
+            <ui:Button text="Step 3: Using Gamebuild" display-tooltip-when-elided="true" name="step3-button" view-data-key="projectlink" style="height: 50px; display: none;" />
+            <ui:GroupBox name="Foldouts" style="margin-right: 20px;">
+                <ui:Foldout text="Project Settings" value="true" usage-hints="None" style="display: none;">
+                    <ui:GroupBox style="height: auto; width: auto;">
+                        <ui:TextField picking-mode="Ignore" label="Token (from the dashboard)" name="token-field" view-data-key="tokentext" mask-character="*" password="true" />
+                    </ui:GroupBox>
+                </ui:Foldout>
+                <ui:Foldout text="Need Help?">
+                    <ui:Button text="Get Started Guide" display-tooltip-when-elided="true" name="getstarted-button" style="display: none;" />
+                    <ui:Button text="Discord" display-tooltip-when-elided="true" name="discord-button" />
+                    <ui:Button text="Give us feedback" display-tooltip-when-elided="true" name="feedback-button" />
+                </ui:Foldout>
+            </ui:GroupBox>
+            <ui:Label text="© 2023 gamebuild.io" display-tooltip-when-elided="true" style="height: -8px; width: 90%; -unity-text-align: middle-left; white-space: normal; margin-top: 10px; margin-right: 0; margin-left: 10px; margin-bottom: 10px; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; font-size: 11px; -unity-font-style: bold; align-items: center; justify-content: space-between;" />
+        </ui:ScrollView>
+    </ui:GroupBox>
+</ui:UXML>

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c7c695651be6f340a32fef05a7d7c9a, type: 3}
+  m_Name: Content Builder Config
+  m_EditorClassIdentifier: 
+  username: gpsjhPsG4xK6IUGbWtQYOYrQ8xYlynPlZTyvkJUiQYYAS3dg0G51668YbLz8FaMEM4BqsSbBQAjfPzRW25aFZNEpyPF9v5zL/cbDUqOla+xPqUTmlHYUPdfGXBLbJodg
+  rememberPassword: 1
+  password: 8NR8naE0uW5zAbVT5Mmd51jXNndCLuZDf8/ksPQuEPOFUzGwVopvLLhti6fXiMEZUO0FGHf/PcZ9O8/hF45mLLsNVECX2FXemudBjplcFZdv5Mg3jKZdfeOouoEOzwce
+  targetApp: 480
+  lastDepot: 0
+  depots: []

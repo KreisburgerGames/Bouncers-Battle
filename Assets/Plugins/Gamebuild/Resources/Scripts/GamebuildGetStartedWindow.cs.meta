@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 444152a3c1596404f84309aac7f11212
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_ViewDataDictionary: {instanceID: 0}
+  - _tree: {fileID: 9197481963319205126, guid: 6ba401d27389a1e46af1c530c4fc715d, type: 3}
+  - gamebuildCanvas: {fileID: 425229809348070835, guid: 7a386aea17834d542b8faabbb744dd0a, type: 3}
+  - prefab: {fileID: 425229809348070835, guid: 7a386aea17834d542b8faabbb744dd0a, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

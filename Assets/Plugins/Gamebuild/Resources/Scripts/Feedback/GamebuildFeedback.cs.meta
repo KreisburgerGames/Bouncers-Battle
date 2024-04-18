@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: d6a9e044b385e4a4cb386147608b729e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - chimeSound: {fileID: 8300000, guid: 4fe923a0cf75c844cb52a002e94ded20, type: 3}
+  - chimeAudioSource: {instanceID: 0}
+  - canvasUI: {instanceID: 0}
+  executionOrder: 0
+  icon: {fileID: 2800000, guid: add04378a5b46c34c8b0a639d54cf634, type: 3}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

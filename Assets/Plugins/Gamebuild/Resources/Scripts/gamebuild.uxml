@@ -1,0 +1,42 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:GroupBox name="MainWindow" style="width: 100%; height: 100%; align-items: stretch; flex-direction: column; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; margin-left: 5px; margin-right: 5px; margin-top: 3px; margin-bottom: 3px;">
+        <ui:ScrollView>
+            <ui:VisualElement style="align-items: center; width: 100%; height: 100%; min-height: auto; min-width: auto; flex-grow: initial; justify-content: center; flex-shrink: initial;">
+                <ui:IMGUIContainer style="background-image: resource(&apos;Resource Assets/Banners/gamebuild_banner&apos;); height: 100%; width: 100%; flex-shrink: 1; flex-grow: initial; -unity-background-scale-mode: scale-to-fit; min-height: auto; margin-top: 0; margin-bottom: 0; align-items: center; padding-bottom: 0; cursor: resource(&apos;Icons/Banners/gamebuild_banner&apos;);" />
+            </ui:VisualElement>
+            <ui:VisualElement style="align-items: center; justify-content: center; flex-direction: row; width: 100%; height: 100px; margin-left: 0; margin-right: 0; margin-top: 10px; margin-bottom: 10px;">
+                <ui:Button text="Dashboard" display-tooltip-when-elided="true" name="dashboard-button" style="height: 24px; width: 100px;" />
+                <ui:Button text="Documentation" display-tooltip-when-elided="true" name="docs-button" style="height: 24px; width: 100px;" />
+                <ui:Button text="Guides" display-tooltip-when-elided="true" name="guides-button" style="height: 24px; width: 100px;" />
+            </ui:VisualElement>
+            <ui:GroupBox name="Foldouts" style="margin-right: 20px;">
+                <ui:Foldout text="Gamebuild Settings" value="true">
+                    <ui:GroupBox style="height: auto; width: auto;">
+                        <ui:Button text="Add Gamebuild Canvas To Scene" display-tooltip-when-elided="true" name="add-gamebuild-canvas" style="height: 31px; margin-bottom: 5px;" />
+                        <ui:TextField picking-mode="Ignore" label="Gamebuild Token" name="TokenText" view-data-key="tokentext" mask-character="*" password="true" style="margin-bottom: 5px; display: none;" />
+                        <ui:Button text="Create playtest build" display-tooltip-when-elided="true" name="build-button" tooltip="Make sure to set your build settings before creating a playtest build" style="height: 56px; margin-bottom: 5px;" />
+                        <ui:Button text="View Gamebuild" display-tooltip-when-elided="true" name="view-gamebuild" tooltip="Make sure to set your build settings before creating a playtest build" style="height: 34px;" />
+                    </ui:GroupBox>
+                </ui:Foldout>
+                <ui:Foldout text="Playtest Settings" value="true">
+                    <ui:GroupBox style="height: auto; width: auto;">
+                        <ui:DropdownField label="Only run on published builds" index="-1" name="only-published-builds" />
+                        <ui:Toggle label="Handle Feedback Input" tooltip="Allows you to handle input for showing and hiding the feedback panel." name="handle-feedback-input" view-data-key="handle-feedback-bool" style="flex-direction: row;" />
+                        <ui:TextField picking-mode="Ignore" label="Feedback Key" value="X" text="X" name="feedback-key" view-data-key="feedbackkey" tooltip="The key used to toggle your feedback panel ONLY if you are not handling input." />
+                        <ui:DropdownField label="Sounds" index="-1" name="sound-toggle" view-data-key="soundtoggle" />
+                        <ui:DropdownField label="Feedback Reminders" index="-1" choices="Off" name="reminder-toggle" view-data-key="remindertoggle" />
+                        <ui:TextField picking-mode="Ignore" label="Send Reminder Every" value="500" text="500" name="feedback-reminder-timer" view-data-key="remindertimer" />
+                        <ui:TextField multiline="true" picking-mode="Ignore" label="Playtest Start Message" name="playtest-start-message" view-data-key="playteststartmessage" style="height: 176px; width: 100%; margin-bottom: 5px;" />
+                        <ui:Button text="Reset Playtest Start Message" display-tooltip-when-elided="true" name="reset-playtest-start-message" view-data-key="reset" style="height: 24px;" />
+                    </ui:GroupBox>
+                </ui:Foldout>
+                <ui:Foldout text="Need Help?">
+                    <ui:Button text="Get Started Guide" display-tooltip-when-elided="true" name="getstarted-button" />
+                    <ui:Button text="Discord" display-tooltip-when-elided="true" name="discord-button" />
+                    <ui:Button text="Give us feedback" display-tooltip-when-elided="true" name="feedback-button" />
+                </ui:Foldout>
+            </ui:GroupBox>
+            <ui:Label text="© 2023 gamebuild.io" display-tooltip-when-elided="true" style="height: -8px; width: 90%; -unity-text-align: middle-left; white-space: normal; margin-top: 10px; margin-right: 0; margin-left: 10px; margin-bottom: 10px; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0; font-size: 11px; -unity-font-style: bold; align-items: center; justify-content: center;" />
+        </ui:ScrollView>
+    </ui:GroupBox>
+</ui:UXML>
