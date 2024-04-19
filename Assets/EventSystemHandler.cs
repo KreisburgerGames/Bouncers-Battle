@@ -20,7 +20,6 @@ public class EventSystemHandler : MonoBehaviour
             lastScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
             if (GameObject.FindFirstObjectByType<EventSystem>() == null)
             {
-                print("yes");
                 GameObject eventSystem = Instantiate(new GameObject(), null, true);
                 DontDestroyOnLoad(eventSystem);
                 eventSystem.AddComponent<EventSystem>();

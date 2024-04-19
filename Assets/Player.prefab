@@ -60,7 +60,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b392ece28f0285b40bb8fe24cfa70efa, type: 2}
+  - {fileID: 10306, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -145,6 +145,7 @@ MonoBehaviour:
   nudgeVelocityThreshold: 10
   leaveParticle: {fileID: 4130048617430565197, guid: f8ad62f84d534034aa73590ebe58078d, type: 3}
   dashParticle: {fileID: 7043125610243609276, guid: 09a03e0065a847b43b00de5b468ef7d6, type: 3}
+  lastThrowVector: {x: 0, y: 0}
 --- !u!61 &3700985883371001143
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -411,11 +412,12 @@ MonoBehaviour:
   _networkBehaviours:
   - {fileID: 8150124203046842867}
   - {fileID: -93176758341083922}
+  - {fileID: -1396820515548491854}
   <SerializedRootNetworkBehaviour>k__BackingField: {fileID: 0}
   <NestedRootNetworkBehaviours>k__BackingField: []
   SerializedTransformProperties:
     Position: {x: 0, y: 0, z: 0}
-    Rotation: {x: -0, y: -0, z: -0, w: 1}
+    Rotation: {x: 0, y: 0, z: 0, w: 1}
     LocalScale: {x: 1, y: 1, z: 1}
   _isNetworked: 1
   _isSpawnable: 1
@@ -423,9 +425,9 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 13
+  <PrefabId>k__BackingField: 14
   <SpawnableCollectionId>k__BackingField: 0
-  _scenePathHash: 584410112
+  _scenePathHash: 0
   <SceneId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 16799108592042421765
 --- !u!114 &4550141182693624460
@@ -455,3 +457,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3da71c26e1196f94c8f8e2e923d25b74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _componentIndexCache: 2
+  _addedNetworkObject: {fileID: 1003659968581309988}
+  _networkObjectCache: {fileID: 1003659968581309988}
+  objToSpawn: {fileID: 0}
+  spawnedObject: {fileID: 0}

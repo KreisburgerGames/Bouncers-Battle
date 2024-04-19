@@ -25,7 +25,6 @@ public class MainMenuManager : MonoBehaviour
     {
         instance = this;
     }
-
     private void TryFindLocalPlayer()
     {
         foreach (PlayerSpawner player in FindObjectsOfType<PlayerSpawner>())
@@ -40,6 +39,18 @@ public class MainMenuManager : MonoBehaviour
 
     private void Update()
     {
+        if(BootstrapManager.joinedByID)
+        {
+            BootstrapManager.joinedByID = false;
+            CloseAllScreens();
+            OpenLobbyScreen();
+        }
+        if (BootstrapManager.failedJoinByID)
+        {
+            CloseAllScreens();
+            OpenMainMenu();
+            BootstrapManager.failedJoinByID = false;
+        }
         if (FindFirstObjectByType<PlayerSpawner>() == null)
         {
             return;
@@ -141,11 +152,13 @@ public class MainMenuManager : MonoBehaviour
 
     public void JoinLobby()
     {
+        if(lobbyInput.text == string.Empty)
+        {
+            return;
+        }
         LoadingScreen();
         CSteamID steamID = new CSteamID(Convert.ToUInt64(lobbyInput.text));
         BootstrapManager.JoinByID(steamID);
-        CloseAllScreens();
-        OpenLobbyScreen();
     }
 
     public void StartGame()

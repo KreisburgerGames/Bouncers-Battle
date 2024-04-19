@@ -16,12 +16,12 @@ public class PlayerSpawner : NetworkBehaviour
     public GameObject playerToSpawn;
     public float spawnPadding = 1.0f;
     bool spawned = false;
-    public readonly SyncVar<ulong> playerSteamID = new SyncVar<ulong>();
+    [SerializeField]public readonly SyncVar<ulong> playerSteamID = new SyncVar<ulong>();
     public readonly SyncVar<string> playerName = new SyncVar<string>();
     public readonly SyncVar<bool> playerReady = new SyncVar<bool>();
     bool client = false;
     bool requestListUpdate = false;
-    int players = 0;
+    public readonly SyncVar<int> players = new SyncVar<int>();
     GameObject playersListContent;
     public GameObject playerBarObj;
     public Vector2 offset = Vector2.zero;
@@ -34,6 +34,12 @@ public class PlayerSpawner : NetworkBehaviour
         SteamAPI.Init();
     }
 
+    private void Awake()
+    {
+        players.Value = GameObject.FindObjectsOfType<PlayerSpawner>().Length;
+        playersListContent = GameObject.FindWithTag("PlayerListContent");
+    }
+
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -44,21 +50,22 @@ public class PlayerSpawner : NetworkBehaviour
         }
     }
 
+    [Rpc]
     private void Init()
     {
-        players = GameObject.FindObjectsOfType<PlayerSpawner>().Length;
-        playersListContent = GameObject.FindWithTag("PlayerListContent");
         playerSteamID.Value = (ulong)SteamUser.GetSteamID();
         playerName.Value = SteamFriends.GetPersonaName();
         SetReady(false);
         UpdatePlayerList();
     }
 
+    [Rpc]
     public void ToggleReady()
     {
         playerReady.Value = !playerReady.Value;
     }
 
+    [Rpc]
     private void SetReady(bool isReady)
     {
         playerReady.Value = isReady;
@@ -103,14 +110,18 @@ public class PlayerSpawner : NetworkBehaviour
         {
             bool loaded = true;
             foreach (PlayerBar listObject in GameObject.FindObjectsOfType<PlayerBar>()) { if (listObject.playerName == null) { loaded = false; } }
-            if (loaded && requestListUpdate)
+            if (loaded)
             {
                 UpdatePlayerList();
             }
         }
-        if(players != GameObject.FindObjectsOfType<PlayerSpawner>().Length && !updating)
+        if (requestListUpdate)
         {
-            players = GameObject.FindObjectsOfType<PlayerSpawner>().Length;
+            UpdatePlayerList();
+        }
+        if(players.Value != GameObject.FindObjectsOfType<PlayerSpawner>().Length && !updating)
+        {
+            players.Value = GameObject.FindObjectsOfType<PlayerSpawner>().Length;
             updating = true;
             requestListUpdate = true;
         }
@@ -134,16 +145,11 @@ public class PlayerSpawner : NetworkBehaviour
         }
         foreach (PlayerSpawner player in GameObject.FindObjectsOfType<PlayerSpawner>())
         {
-            bool isReady = false;
-            if(player.playerReady.Value)
-            {
-                isReady = true;
-            }
             foreach(PlayerBar bar in GameObject.FindObjectsOfType<PlayerBar>())
             {
                 if(bar.playerId == player.playerSteamID.Value)
                 {
-                    if (isReady)
+                    if (player.playerReady.Value)
                     {
                         bar.ready.color = Color.green;
                     }

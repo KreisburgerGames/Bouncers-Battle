@@ -31,6 +31,8 @@ public class BootstrapManager : MonoBehaviour
     [SerializeField] private string menuName = "Menu";
     [SerializeField] public NetworkManager networkManager;
     [SerializeField] public FishySteamworks.FishySteamworks fishySteamworks;
+    public static bool joinedByID = false;
+    public static bool failedJoinByID = false;
 
     protected Callback<LobbyCreated_t> LobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> JoinRequest;
@@ -104,6 +106,13 @@ public class BootstrapManager : MonoBehaviour
         if(SteamMatchmaking.RequestLobbyData(steamID))
         {
             SteamMatchmaking.JoinLobby(steamID);
+            instance.fishySteamworks.SetClientAddress(SteamMatchmaking.GetLobbyData(steamID, "HostAdress"));
+            instance.fishySteamworks.StartConnection(false);
+            joinedByID = true;
+        }
+        else
+        {
+            failedJoinByID = true;
         }
     }
     
