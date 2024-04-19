@@ -8,7 +8,6 @@ using Steamworks;
 using UnityEngine.UI;
 using System.Linq;
 
-//Made by Bobsi Unity - Youtube
 public class PlayerObjectSpawner : NetworkBehaviour
 {
     public GameObject objToSpawn;

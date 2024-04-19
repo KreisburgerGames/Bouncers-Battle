@@ -50,7 +50,7 @@ public class PlayerSpawner : NetworkBehaviour
         }
     }
 
-    [Rpc]
+    [ObserversRpc(BufferLast = true, RunLocally = true)]
     private void Init()
     {
         playerSteamID.Value = (ulong)SteamUser.GetSteamID();
@@ -59,13 +59,13 @@ public class PlayerSpawner : NetworkBehaviour
         UpdatePlayerList();
     }
 
-    [Rpc]
+    [ObserversRpc(BufferLast = true, RunLocally = true)]
     public void ToggleReady()
     {
         playerReady.Value = !playerReady.Value;
     }
 
-    [Rpc]
+    [ObserversRpc(BufferLast = true, RunLocally = true)]
     private void SetReady(bool isReady)
     {
         playerReady.Value = isReady;

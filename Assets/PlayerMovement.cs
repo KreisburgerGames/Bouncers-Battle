@@ -176,7 +176,6 @@ public class PlayerMovement : NetworkBehaviour
         }
     }
 
-
     void Throw()
     {
         rb.AddForce(throwVector * throwForce, ForceMode2D.Impulse);
