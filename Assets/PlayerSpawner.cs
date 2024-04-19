@@ -106,7 +106,7 @@ public class PlayerSpawner : NetworkBehaviour
         {
             return;
         }
-        if (infoLoading)
+        if (infoLoading || requestListUpdate)
         {
             bool loaded = true;
             foreach (PlayerBar listObject in GameObject.FindObjectsOfType<PlayerBar>()) { if (listObject.playerName == null) { loaded = false; } }
@@ -114,10 +114,6 @@ public class PlayerSpawner : NetworkBehaviour
             {
                 UpdatePlayerList();
             }
-        }
-        if (requestListUpdate)
-        {
-            UpdatePlayerList();
         }
         if(players.Value != GameObject.FindObjectsOfType<PlayerSpawner>().Length && !updating)
         {
