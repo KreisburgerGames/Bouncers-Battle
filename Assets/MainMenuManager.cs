@@ -20,6 +20,9 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private Button startGameButton;
     [SerializeField] private TMP_Text toggleReadyText;
     private PlayerSpawner localPlayer;
+    bool canFindPlayer = true;
+    public float findPlayerLeaveBuffer = 1f;
+    float findPlayerLeaveBufferTimer = 0f;
     bool localPlayerFound = false;
 
     private void Awake()
@@ -56,10 +59,18 @@ public class MainMenuManager : MonoBehaviour
         {
             return;
         }
-        if (!localPlayerFound)
+        if (!localPlayerFound && canFindPlayer)
         {
             TryFindLocalPlayer();
-            print("checking");
+        }
+        if (!canFindPlayer)
+        {
+            findPlayerLeaveBufferTimer += Time.deltaTime;
+            if(findPlayerLeaveBufferTimer <= findPlayerLeaveBuffer)
+            {
+                canFindPlayer = true;
+                findPlayerLeaveBufferTimer = 0f;
+            }
         }
         CheckReady();
     }
@@ -156,6 +167,7 @@ public class MainMenuManager : MonoBehaviour
         lobbyTitle.text = "Loading...";
         lobbyIDText.text = "Loading...";
         toggleReadyText.text = "Ready";
+        canFindPlayer = false;
         startGameButton.gameObject.SetActive(false);
         localPlayer = null;
         localPlayerFound = false;

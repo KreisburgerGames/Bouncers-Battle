@@ -10,8 +10,6 @@ using UnityEngine.UI;
 using FishNet.Object.Synchronizing;
 using FishNet.Demo.AdditiveScenes;
 
-
-// Chat GPT Optimized Code
 public class PlayerSpawner : NetworkBehaviour
 {
     public GameObject playerToSpawn;
@@ -151,7 +149,7 @@ public class PlayerSpawner : NetworkBehaviour
         {
             requestListUpdate = true;
         }
-        // GPT Adjusted
+
         if (infoLoading || requestListUpdate)
         {
             bool loaded = true;

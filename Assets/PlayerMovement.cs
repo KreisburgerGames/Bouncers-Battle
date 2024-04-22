@@ -32,16 +32,13 @@ public class PlayerMovement : NetworkBehaviour
     PlayerObjectSpawner spawner;
     public Vector2 lastThrowVector;
 
-    [Rpc]
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         lineRenderer = GetComponent<LineRenderer>();
-        this.gameObject.SetActive(true);
         spawner = GetComponent<PlayerObjectSpawner>();
     }
 
-    [Rpc]
     public void LeaveLobby()
     {
         spawner.objToSpawn = leaveParticle;
@@ -67,7 +64,6 @@ public class PlayerMovement : NetworkBehaviour
         this.gameObject.SetActive(true);
     }
 
-    [Rpc]
     private void Update()
     {
         if (SteamMatchmaking.GetLobbyData(new CSteamID(BootstrapManager.CurrentLobbyID), "Started") == "false")
@@ -185,6 +181,6 @@ public class PlayerMovement : NetworkBehaviour
 
     void SpawnDashParticle()
     {
-        spawner.SpawnObject(dashParticle, transform, spawner, true, this);
+        spawner.SpawnObject(dashParticle, transform, spawner, true, lastThrowVector);
     }
 }

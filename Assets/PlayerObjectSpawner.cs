@@ -21,12 +21,12 @@ public class PlayerObjectSpawner : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void SpawnObject(GameObject obj, Transform player, PlayerObjectSpawner script, bool dashParticle=false, PlayerMovement pm=null)
+    public void SpawnObject(GameObject obj, Transform player, PlayerObjectSpawner script, bool dashParticle=false, Vector2 lastThrowVector=new Vector2())
     {
-        GameObject spawned = Instantiate(obj, player.position + player.forward, Quaternion.identity);
+        GameObject spawned = Instantiate(obj, player.position, Quaternion.identity);
         if(dashParticle)
         {
-            float angle = Mathf.Atan2(pm.lastThrowVector.y, pm.lastThrowVector.x) * Mathf.Rad2Deg;
+            float angle = Mathf.Atan2(lastThrowVector.y, lastThrowVector.x) * Mathf.Rad2Deg;
             if (angle < 0) angle += 360;
             Quaternion rot = Quaternion.Euler((angle + 180) * -1, 90, 0);
             spawned.transform.localRotation = rot;
