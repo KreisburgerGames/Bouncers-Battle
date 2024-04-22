@@ -51,14 +51,8 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 8165972142394516758}
   playerToSpawn: {fileID: 1894789409805677966, guid: b68eedc53d22fbe4a891e647db132af3, type: 3}
   spawnPadding: 0.5
-  playerSteamID:
-    _value: 0
-  playerName:
-    _value: 
-  playerReady:
-    _value: 0
-  playerBarObj: {fileID: 4658745750652641561, guid: 1e8764aa06bcc364bb658c96efb25b27, type: 3}
-  offset: {x: 320, y: -60}
+  playerBarPrefab: {fileID: 4658745750652641561, guid: 1e8764aa06bcc364bb658c96efb25b27, type: 3}
+  offset: {x: 315, y: -65}
   addPlayerOffset: -155
 --- !u!114 &8165972142394516758
 MonoBehaviour:

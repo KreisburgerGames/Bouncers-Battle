@@ -1,3 +1,4 @@
+using FishNet.Object;
 using Steamworks;
 using System;
 using System.Collections;
@@ -29,7 +30,7 @@ public class MainMenuManager : MonoBehaviour
     {
         foreach (PlayerSpawner player in FindObjectsOfType<PlayerSpawner>())
         {
-            if (player.playerSteamID.Value == (ulong)SteamUser.GetSteamID())
+            if (player.playerSteamID == (ulong)SteamUser.GetSteamID())
             {
                 localPlayer = player;
                 localPlayerFound = true;
@@ -58,6 +59,7 @@ public class MainMenuManager : MonoBehaviour
         if (!localPlayerFound)
         {
             TryFindLocalPlayer();
+            print("checking");
         }
         CheckReady();
     }
@@ -67,7 +69,7 @@ public class MainMenuManager : MonoBehaviour
         bool canStart = true;
         foreach (PlayerSpawner player in FindObjectsOfType<PlayerSpawner>())
         {
-            if (!player.playerReady.Value)
+            if (!player.playerReady)
             {
                 canStart = false;
             }
@@ -97,16 +99,14 @@ public class MainMenuManager : MonoBehaviour
 
     public void ToggleReady()
     {
-        localPlayer.ToggleReady();
-        if (localPlayer.playerReady.Value)
+        localPlayer.ServerToggleReady(localPlayer.gameObject);
+        if (!localPlayer.playerReady)
         {
             toggleReadyText.text = "Unready";
         }
         else
         {
-            {
-                toggleReadyText.text = "Ready";
-            }
+            toggleReadyText.text = "Ready";
         }
     }
     
@@ -146,6 +146,19 @@ public class MainMenuManager : MonoBehaviour
     public void LeaveLobby()
     {
         BootstrapManager.LeaveLobby();
+        if (SteamMatchmaking.GetLobbyData((CSteamID)BootstrapManager.CurrentLobbyID, "Started") == "false")
+        {
+            foreach (PlayerBar listObject in GameObject.FindObjectsOfType<PlayerBar>())
+            {
+                Destroy(listObject.gameObject);
+            }
+        }
+        lobbyTitle.text = "Loading...";
+        lobbyIDText.text = "Loading...";
+        toggleReadyText.text = "Ready";
+        startGameButton.gameObject.SetActive(false);
+        localPlayer = null;
+        localPlayerFound = false;
         CloseAllScreens();
         OpenMainMenu();
     }

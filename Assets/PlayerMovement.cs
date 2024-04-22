@@ -185,6 +185,6 @@ public class PlayerMovement : NetworkBehaviour
 
     void SpawnDashParticle()
     {
-        spawner.SpawnObject(dashParticle, transform, spawner, true);
+        spawner.SpawnObject(dashParticle, transform, spawner, true, this);
     }
 }

@@ -20,14 +20,12 @@ public class PlayerObjectSpawner : NetworkBehaviour
             GetComponent<PlayerObjectSpawner>().enabled = false;
     }
 
-
     [ServerRpc]
-    public void SpawnObject(GameObject obj, Transform player, PlayerObjectSpawner script, bool dashParticle=false)
+    public void SpawnObject(GameObject obj, Transform player, PlayerObjectSpawner script, bool dashParticle=false, PlayerMovement pm=null)
     {
         GameObject spawned = Instantiate(obj, player.position + player.forward, Quaternion.identity);
         if(dashParticle)
         {
-            PlayerMovement pm = GetComponent<PlayerMovement>();
             float angle = Mathf.Atan2(pm.lastThrowVector.y, pm.lastThrowVector.x) * Mathf.Rad2Deg;
             if (angle < 0) angle += 360;
             Quaternion rot = Quaternion.Euler((angle + 180) * -1, 90, 0);

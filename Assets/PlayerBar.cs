@@ -41,6 +41,14 @@ public class PlayerBar : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if(playerNameText.text == "")
+        {
+            playerNameText.text = "Loading...";
+        }
+    }
+
     private void OnImageLoaded(AvatarImageLoaded_t callback)
     {
         if(callback.m_steamID.m_SteamID == playerId)

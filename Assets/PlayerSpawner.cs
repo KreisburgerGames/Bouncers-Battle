@@ -1,94 +1,134 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Steamworks;
 using FishNet.Object;
 using FishNet.Connection;
-using Steamworks;
 using FishNet.CodeGenerating;
 using FishNet.Managing.Server;
-using static Gamebuild.Feedback.GameBuildData;
-using FishNet.Object.Synchronizing;
-using System.Runtime.CompilerServices;
 using UnityEngine.UI;
+using FishNet.Object.Synchronizing;
+using FishNet.Demo.AdditiveScenes;
 
+
+// Chat GPT Optimized Code
 public class PlayerSpawner : NetworkBehaviour
 {
     public GameObject playerToSpawn;
     public float spawnPadding = 1.0f;
     bool spawned = false;
-    [SerializeField]public readonly SyncVar<ulong> playerSteamID = new SyncVar<ulong>();
-    public readonly SyncVar<string> playerName = new SyncVar<string>();
-    public readonly SyncVar<bool> playerReady = new SyncVar<bool>();
+
+    public ulong playerSteamID;
+    public string playerName;
+    public bool playerReady;
+
     bool client = false;
     bool requestListUpdate = false;
-    public readonly SyncVar<int> players = new SyncVar<int>();
+    public int players = 0;
+
     GameObject playersListContent;
-    public GameObject playerBarObj;
+    public GameObject playerBarPrefab;
     public Vector2 offset = Vector2.zero;
     public float addPlayerOffset = 0;
+
     bool updating = false;
     bool infoLoading = false;
 
-    private void Start()
+    public float refreshRate = 1f;
+    public float refreshTimer = 0f;
+
+    void Start()
     {
         SteamAPI.Init();
-    }
-
-    private void Awake()
-    {
-        players.Value = GameObject.FindObjectsOfType<PlayerSpawner>().Length;
-        playersListContent = GameObject.FindWithTag("PlayerListContent");
     }
 
     public override void OnStartClient()
     {
         base.OnStartClient();
+
+        // Check if this is the local player
         if (base.IsOwner)
         {
             client = true;
             Init();
+            UpdatePlayerList();
+        }
+        else
+        {
+            GetComponent<PlayerSpawner>().enabled = false;
+            UpdatePlayerList();
         }
     }
 
-    [ObserversRpc(BufferLast = true, RunLocally = true)]
+    private void Awake()
+    {
+        playersListContent = GameObject.FindWithTag("PlayerListContent");
+    }
+
     private void Init()
     {
-        playerSteamID.Value = (ulong)SteamUser.GetSteamID();
-        playerName.Value = SteamFriends.GetPersonaName();
-        SetReady(false);
+        ServerSetNameAndID((ulong)SteamUser.GetSteamID(), SteamFriends.GetPersonaName(), this.gameObject);
+        ServerSetReady(false, this.gameObject);
         UpdatePlayerList();
     }
 
-    [ObserversRpc(BufferLast = true, RunLocally = true)]
-    public void ToggleReady()
+    [ServerRpc]
+    public void ServerToggleReady(GameObject player)
     {
-        playerReady.Value = !playerReady.Value;
+        ToggleReady(player);
     }
 
-    [ObserversRpc(BufferLast = true, RunLocally = true)]
-    private void SetReady(bool isReady)
+    [ServerRpc]
+    public void ServerSetNameAndID(ulong steamID, string name, GameObject player)
     {
-        playerReady.Value = isReady;
+        CmdSetNameAndID(steamID, name, player);
+    }
+
+    [ServerRpc]
+    public void ServerSetReady(bool ready, GameObject player)
+    {
+        SetReady(ready, player);
+    }
+
+    [ObserversRpc]
+    private void ToggleReady(GameObject player)
+    {
+        player.GetComponent<PlayerSpawner>().playerReady = !playerReady;
+    }
+
+    [ObserversRpc]
+    private void CmdSetNameAndID(ulong steamID, string name, GameObject player)
+    {
+        player.GetComponent<PlayerSpawner>().playerSteamID = steamID;
+        player.GetComponent<PlayerSpawner>().playerName = name;
+    }
+
+    [ObserversRpc]
+    private void SetReady(bool isReady, GameObject player)
+    {
+        player.GetComponent<PlayerSpawner>().playerReady = isReady;
     }
 
     void UpdatePlayerList()
     {
         if (infoLoading) return;
-        foreach (PlayerBar listObject in GameObject.FindObjectsOfType<PlayerBar>()) { if (listObject.playerId == null) { infoLoading = true; return; } }
         requestListUpdate = false;
-        foreach (PlayerBar listObject in GameObject.FindObjectsOfType<PlayerBar>())
+
+        // Clear existing player bars
+        foreach (Transform child in playersListContent.transform)
         {
-            Destroy(listObject.gameObject);
+            Destroy(child.gameObject);
         }
+
         int playerCount = 0;
-        foreach(PlayerSpawner player in GameObject.FindObjectsOfType<PlayerSpawner>())
+        // Instantiate player bars for each player
+        foreach (PlayerSpawner player in GameObject.FindObjectsOfType<PlayerSpawner>())
         {
-            GameObject playerBarObjRef = Instantiate(playerBarObj) as GameObject;
+            GameObject playerBarObjRef = Instantiate(playerBarPrefab, playersListContent.transform);
             PlayerBar playerBar = playerBarObjRef.GetComponent<PlayerBar>();
 
-            playerBar.playerName = player.playerName.Value;
-            playerBar.name = player.playerName.Value;
-            playerBar.playerId = player.playerSteamID.Value;
+            playerBar.playerName = player.playerName;
+            playerBar.playerId = player.playerSteamID;
             playerBar.SetPlayerValues();
 
             playerBarObjRef.transform.SetParent(playersListContent.transform);
@@ -102,59 +142,78 @@ public class PlayerSpawner : NetworkBehaviour
     [Rpc]
     private void Update()
     {
-        if(!client)
+        if (!client)
         {
             return;
         }
+        refreshTimer += Time.deltaTime;
+        if (refreshTimer > refreshRate)
+        {
+            requestListUpdate = true;
+        }
+        // GPT Adjusted
         if (infoLoading || requestListUpdate)
         {
             bool loaded = true;
             foreach (PlayerBar listObject in GameObject.FindObjectsOfType<PlayerBar>()) { if (listObject.playerName == null) { loaded = false; } }
             if (loaded)
             {
-                UpdatePlayerList();
+                bool alreadySet = true;
+                foreach (PlayerBar bar in GameObject.FindObjectsOfType<PlayerBar>())
+                {
+                    if (bar.playerNameText.text == "Loading..." || bar.playerNameText.text == "" || bar.playerNameText.text == "Name")
+                    {
+                        alreadySet = false;
+                    }
+                }
+                if (!alreadySet)
+                {
+                    UpdatePlayerList();
+                }
             }
         }
-        if(players.Value != GameObject.FindObjectsOfType<PlayerSpawner>().Length && !updating)
+        // Update player ready status color
+        foreach (PlayerSpawner player in GameObject.FindObjectsOfType<PlayerSpawner>())
         {
-            players.Value = GameObject.FindObjectsOfType<PlayerSpawner>().Length;
+            foreach(PlayerBar playerBar in GameObject.FindObjectsOfType<PlayerBar>())
+            {
+                if(playerBar.playerId == player.playerSteamID)
+                {
+                    if (player.playerReady)
+                    {
+                        playerBar.ready.color = Color.green;
+                    }
+                    else
+                    {
+                        playerBar.ready.color = Color.red;
+                    }
+                }
+            }
+        }
+        if (players != GameObject.FindObjectsOfType<PlayerSpawner>().Length && !updating)
+        {
+            players = GameObject.FindObjectsOfType<PlayerSpawner>().Length;
+            ServerSetNameAndID((ulong)SteamUser.GetSteamID(), SteamFriends.GetPersonaName(), this.gameObject);
+            ServerSetReady(playerReady, this.gameObject);
             updating = true;
             requestListUpdate = true;
         }
         if (SteamMatchmaking.GetLobbyData(new CSteamID(BootstrapManager.CurrentLobbyID), "Started") == "true" && !spawned)
         {
-            GameObject playerSpawned = (GameObject)Instantiate(playerToSpawn, UnityEngine.SceneManagement.SceneManager.GetSceneByBuildIndex(2));    
-            float width = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0f, 0f)), Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0f))) * 0.5f;
-            float height = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0f, 0f)), Camera.main.ScreenToWorldPoint(new Vector2(0f, Screen.height))) * 0.5f;
-            playerSpawned.transform.position = new Vector2(Random.Range(-width + spawnPadding, width - spawnPadding), Random.Range(-height + spawnPadding, height - spawnPadding));
-            playerSpawned.SetActive(true);
-            ServerManager.Spawn(playerSpawned, ownerConnection:Owner);
-            if (base.IsClient)
-            {
-                playerToSpawn.GetComponent<PlayerMovement>().client = true;
-            }
-            else
-            {
-               playerToSpawn.GetComponent<PlayerMovement>().client = false;
-            }
+            SpawnPlayer(this.Owner);
             spawned = true;
         }
-        foreach (PlayerSpawner player in GameObject.FindObjectsOfType<PlayerSpawner>())
-        {
-            foreach(PlayerBar bar in GameObject.FindObjectsOfType<PlayerBar>())
-            {
-                if(bar.playerId == player.playerSteamID.Value)
-                {
-                    if (player.playerReady.Value)
-                    {
-                        bar.ready.color = Color.green;
-                    }
-                    else
-                    {
-                        bar.ready.color = Color.red;
-                    }
-                }
-            }
-        }
+    }
+
+    [ServerRpc]
+    public void SpawnPlayer(NetworkConnection owner)
+    {
+        GameObject playerSpawned = (GameObject)Instantiate(playerToSpawn, UnityEngine.SceneManagement.SceneManager.GetSceneByBuildIndex(2));
+        float width = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0f, 0f)), Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0f))) * 0.5f;
+        float height = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0f, 0f)), Camera.main.ScreenToWorldPoint(new Vector2(0f, Screen.height))) * 0.5f;
+        playerSpawned.transform.position = new Vector2(Random.Range(-width + spawnPadding, width - spawnPadding), Random.Range(-height + spawnPadding, height - spawnPadding));
+        playerSpawned.SetActive(true);
+        ServerManager.Spawn(playerSpawned, ownerConnection: owner);
     }
 }
+
