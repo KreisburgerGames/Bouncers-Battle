@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 1003659968581309988}
   - component: {fileID: 4550141182693624460}
   - component: {fileID: -1396820515548491854}
+  - component: {fileID: 8064289192580047715}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -413,6 +414,7 @@ MonoBehaviour:
   - {fileID: 8150124203046842867}
   - {fileID: -93176758341083922}
   - {fileID: -1396820515548491854}
+  - {fileID: 8064289192580047715}
   <SerializedRootNetworkBehaviour>k__BackingField: {fileID: 0}
   <NestedRootNetworkBehaviours>k__BackingField: []
   SerializedTransformProperties:
@@ -425,7 +427,7 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 14
+  <PrefabId>k__BackingField: 15
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0
@@ -462,3 +464,25 @@ MonoBehaviour:
   _networkObjectCache: {fileID: 1003659968581309988}
   objToSpawn: {fileID: 0}
   spawnedObject: {fileID: 0}
+--- !u!114 &8064289192580047715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1894789409805677966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1ea08ac5bab4bc74d81ede557a268232, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 3
+  _addedNetworkObject: {fileID: 1003659968581309988}
+  _networkObjectCache: {fileID: 1003659968581309988}
+  health: 100
+  punchRange: 2
+  minPunchDmg: 1
+  maxPunchDmg: 2
+  punchKB: 1
+  punchCooldown: 1
+  punchLineRenderer: {fileID: 4121207434280794034, guid: cd20146277fb40f448c5fd0795071ae1, type: 3}

@@ -31,12 +31,14 @@ public class PlayerMovement : NetworkBehaviour
     public GameObject dashParticle;
     PlayerObjectSpawner spawner;
     public Vector2 lastThrowVector;
+    NetworkGameManager gm;
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         lineRenderer = GetComponent<LineRenderer>();
         spawner = GetComponent<PlayerObjectSpawner>();
+        gm = FindFirstObjectByType<NetworkGameManager>();
     }
 
     public void LeaveLobby()
