@@ -1,3 +1,4 @@
+using FishNet.Connection;
 using FishNet.Object;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,19 +17,24 @@ public class WeaponBase : NetworkBehaviour
     public int maxDmg;
     public float Knockback;
     bool isHolding = false;
-    
+    public GameObject bulletPrfab;
+    public float bulletVelocity;
+
     public void Shoot()
     {
         if (isBetweenShot || isHolding && !isAutomatic) { return; }
-        RaycastHit shot;
-        Physics.Raycast(bulletExit.position, bulletExit.forward, out shot, range);
         isBetweenShot = true;
-        if (shot.collider.gameObject.tag == "Player")
-        {
-            Player hitPlayer = shot.collider.gameObject.GetComponent<Player>();
-            hitPlayer.ServerSetHealth(hitPlayer.health - Random.Range(minDmg, maxDmg), hitPlayer);
-            hitPlayer.GetComponent<Rigidbody2D>().AddForce(bulletExit.forward * Knockback, ForceMode2D.Impulse);
-        }
+        ServerSpawnBullet(bulletPrfab, bulletExit.localRotation, bulletExit.position, GetComponentInParent<NetworkObject>().Owner, bulletVelocity);
+    }
+
+    [ServerRpc]
+    public void ServerSpawnBullet(GameObject bullet, Quaternion direction, Vector3 spawnPoint, NetworkConnection owner, float velocity)
+    {
+        GameObject bulletRef = Instantiate(bullet);
+        bulletRef.transform.localRotation = direction;
+        bulletRef.transform.position = spawnPoint;
+        bulletRef.GetComponent<Rigidbody2D>().AddForce(bulletRef.transform.up * velocity, ForceMode2D.Impulse);
+        ServerManager.Spawn(bulletRef, scene: UnityEngine.SceneManagement.SceneManager.GetSceneByBuildIndex(2), ownerConnection: owner);
     }
 
     private void Update()

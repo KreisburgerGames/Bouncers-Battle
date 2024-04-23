@@ -415,6 +415,8 @@ MonoBehaviour:
   - {fileID: -93176758341083922}
   - {fileID: -1396820515548491854}
   - {fileID: 8064289192580047715}
+  - {fileID: 0}
+  - {fileID: 0}
   <SerializedRootNetworkBehaviour>k__BackingField: {fileID: 0}
   <NestedRootNetworkBehaviours>k__BackingField: []
   SerializedTransformProperties:
