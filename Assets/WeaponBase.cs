@@ -35,6 +35,15 @@ public class WeaponBase : NetworkBehaviour
         bulletRef.transform.position = spawnPoint;
         bulletRef.GetComponent<Rigidbody2D>().AddForce(bulletRef.transform.up * velocity, ForceMode2D.Impulse);
         ServerManager.Spawn(bulletRef, scene: UnityEngine.SceneManagement.SceneManager.GetSceneByBuildIndex(2), ownerConnection: owner);
+        SetBullet(bulletRef, minDmg, maxDmg);
+    }
+
+    [ObserversRpc]
+    private void SetBullet(GameObject bulletToSet, int newMinDmg, int newMaxDmg)
+    {
+        Bullet script = bulletToSet.GetComponent<Bullet>();
+        script.minDmg = newMinDmg;
+        script.maxDmg = newMaxDmg;
     }
 
     private void Update()

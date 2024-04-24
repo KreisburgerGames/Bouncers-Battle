@@ -18,6 +18,7 @@ public class Player : NetworkBehaviour
     public GameObject punchLineRenderer;
     bool isHovering;
     bool canAttack = true;
+    public bool isDead = false;
 
     private void OnMouseEnter()
     {
@@ -66,6 +67,34 @@ public class Player : NetworkBehaviour
         {
             Attack();
         }
+    }
+    public void Die()
+    {
+        ServerSetDead(this, true);
+    }
+
+    [ServerRpc]
+    private void ServerSetDead(Player player, bool newIsDead)
+    {
+        SetDead(player, newIsDead);
+    }
+
+    [ObserversRpc]
+    private void SetDead(Player player, bool newIsDead)
+    {
+        player.isDead = newIsDead;
+    }
+
+    [ServerRpc]
+    public void ServerSetHealth(Player player, int newHealth)
+    {
+        SetHealth(player, newHealth);
+    }
+
+    [ObserversRpc]
+    private void SetHealth(Player player, int newHealth)
+    {
+        player.health = newHealth;
     }
 
     void Attack()
