@@ -9,6 +9,7 @@ public class NetworkGameManager : NetworkBehaviour
     [SerializeField] private int round = 0;
     public float roundTime = 0f;
     bool client = false;
+    bool counting = false;
 
     public override void OnStartClient()
     {
@@ -22,21 +23,37 @@ public class NetworkGameManager : NetworkBehaviour
 
     private void Update()
     {
+        // Local Code
+        if (counting)
+        {
+            roundTime += Time.deltaTime;
+        }
         if (!client) return;
-        roundTime += Time.deltaTime;
-        ServerUpdateVaribles(this, roundTime, round);
+        // Server Code
     }
 
     [ServerRpc]
-    private void ServerUpdateVaribles(NetworkGameManager gameManager, float rt, int newRound)
+    private void ServerSetCounting(NetworkGameManager gameManager, bool newIsCounting, float currentRoundTime)
     {
-        UpdateVaribles(gameManager, rt, newRound);
+        SetCounting(gameManager, newIsCounting, currentRoundTime);
     }
 
     [ObserversRpc]
-    private void UpdateVaribles(NetworkGameManager gameManager, float rt, int newRound) 
+    private void SetCounting(NetworkGameManager gameManager, bool newIsCounting, float currentRoundTime)
     {
-        gameManager.roundTime = rt;
+        gameManager.counting = newIsCounting;
+        gameManager.roundTime = currentRoundTime;
+    }
+
+    [ServerRpc]
+    private void ServerUpdateRound(NetworkGameManager gameManager, int newRound)
+    {
+        UpdateRound(gameManager, newRound);
+    }
+
+    [ObserversRpc]
+    private void UpdateRound(NetworkGameManager gameManager, int newRound) 
+    {
         gameManager.round = newRound;
     }
 
