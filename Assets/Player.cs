@@ -125,7 +125,7 @@ public class Player : NetworkBehaviour
             {
                 Player hitPlayer = punch.collider.gameObject.GetComponent<Player>();
                 hitPlayer.ServerSetHealth(hitPlayer.health - Random.Range(minPunchDmg, maxPunchDmg), hitPlayer);
-                hitPlayer.GetComponent<Rigidbody2D>().AddForce(transform.forward * punchKB, ForceMode2D.Impulse);
+                hitPlayer.GetComponent<Rigidbody2D>().AddForce(dir * punchKB, ForceMode2D.Impulse);
                 SpawnPunchLineObject(transform.position, hitPlayer.gameObject.transform.position, punchLineRenderer);
             }
         }
