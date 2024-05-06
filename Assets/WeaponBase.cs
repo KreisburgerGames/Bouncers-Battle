@@ -3,6 +3,8 @@ using FishNet.Object;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Player;
+using Cinemachine;
 
 public class WeaponBase : NetworkBehaviour
 {
@@ -11,39 +13,77 @@ public class WeaponBase : NetworkBehaviour
     public float fireCooldown;
     bool isBetweenShot;
     float cooldownTimer;
-    public float range;
     public Transform bulletExit;
     public int minDmg;
     public int maxDmg;
     public float Knockback;
     bool isHolding = false;
-    public GameObject bulletPrfab;
+    public GameObject bulletPrefab;
     public float bulletVelocity;
+    Player owner;
+    public float visualRecoilForce = 1;
+    CinemachineImpulseSource impulseSource;
+
+    private void Awake()
+    {
+        owner = GetComponentInParent<Player>();
+        impulseSource = GetComponent<CinemachineImpulseSource>();
+    }
 
     public void Shoot()
     {
         if (isBetweenShot || isHolding && !isAutomatic) { return; }
         isBetweenShot = true;
-        ServerSpawnBullet(bulletPrfab, bulletExit.localRotation, bulletExit.position, GetComponentInParent<NetworkObject>().Owner, bulletVelocity);
+        Vector3 startPos = bulletExit.position;
+        Vector3 dir = transform.up;
+
+        bool uniqueIDFound = false;
+        int bulletID = Random.Range(100000, 999999);
+        while(!uniqueIDFound)
+        {
+            bool diff = true;
+            foreach(Bullet bullet in GameObject.FindObjectsOfType<Bullet>())
+            {
+                if(bulletID == bullet.bulletID)
+                {
+                    diff = false;
+                }
+            }
+            if( diff ) 
+            { 
+                uniqueIDFound= true;
+            }
+            else
+            {
+                bulletID = Random.Range(100000, 999999);
+            }
+        }
+        SpawnBulletLocal(startPos, dir, bulletID, Owner.ClientId);
+        SpawnBullet(startPos, dir, TimeManager.Tick, GetComponentInParent<Player>(), Owner.ClientId, bulletID, minDmg, maxDmg);
+        impulseSource.m_DefaultVelocity = dir.normalized;
+        impulseSource.GenerateImpulseWithForce(visualRecoilForce);
+    }
+    private void SpawnBulletLocal(Vector3 startPos, Vector3 dir, int newBulletID, int ownerID)
+    {
+        Bullet bullet = Instantiate(bulletPrefab, startPos, Quaternion.Euler(dir)).GetComponent<Bullet>();
+        bullet.Init(dir, bulletVelocity, newBulletID, ownerID, minDmg, maxDmg, startPos);
     }
 
     [ServerRpc]
-    public void ServerSpawnBullet(GameObject bullet, Quaternion direction, Vector3 spawnPoint, NetworkConnection owner, float velocity)
+    private void SpawnBullet(Vector3 startPos, Vector3 dir, uint startTick, Player ownerRef, int bulletID, int ownerID, int newMinDmg, int newMaxDmg)
     {
-        GameObject bulletRef = Instantiate(bullet);
-        bulletRef.transform.localRotation = direction;
-        bulletRef.transform.position = spawnPoint;
-        bulletRef.GetComponent<Rigidbody2D>().AddForce(bulletRef.transform.up * velocity, ForceMode2D.Impulse);
-        ServerManager.Spawn(bulletRef, scene: UnityEngine.SceneManagement.SceneManager.GetSceneByBuildIndex(2), ownerConnection: owner);
-        SetBullet(bulletRef, minDmg, maxDmg);
+        SpawnBulletServer(startPos, dir, startTick, ownerRef, bulletID, ownerID, newMinDmg, newMaxDmg);
+        
     }
 
-    [ObserversRpc]
-    private void SetBullet(GameObject bulletToSet, int newMinDmg, int newMaxDmg)
+    [ObserversRpc(ExcludeOwner = true)]
+    private void SpawnBulletServer(Vector3 startPos, Vector3 dir, uint startTick, Player ownerRef, int bulletID, int ownerID, int newMinDmg, int newMaxDmg)
     {
-        Bullet script = bulletToSet.GetComponent<Bullet>();
-        script.minDmg = newMinDmg;
-        script.maxDmg = newMaxDmg;
+        float timeDifference = (float)(TimeManager.Tick - startTick) / TimeManager.TickRate;
+        Vector3 spawnPos = startPos + dir * bulletVelocity * timeDifference;
+
+        Bullet bullet = Instantiate(bulletPrefab, spawnPos, Quaternion.Euler(dir)).GetComponent<Bullet>();
+        bullet.Init(dir, bulletVelocity, bulletID, ownerID, newMinDmg, newMaxDmg, startPos);
     }
 
     private void Update()

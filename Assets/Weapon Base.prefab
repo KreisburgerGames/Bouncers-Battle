@@ -42,8 +42,9 @@ GameObject:
   - component: {fileID: 1006153582575733271}
   - component: {fileID: 7854913052288511971}
   - component: {fileID: 3339886922688358805}
-  - component: {fileID: 9210766822141351219}
-  - component: {fileID: 2665675700969505007}
+  - component: {fileID: 689760476190879478}
+  - component: {fileID: 1151356777302297791}
+  - component: {fileID: 7543519233263932885}
   m_Layer: 0
   m_Name: Weapon Base
   m_TagString: Untagged
@@ -132,19 +133,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _componentIndexCache: 0
-  _addedNetworkObject: {fileID: 2665675700969505007}
-  _networkObjectCache: {fileID: 2665675700969505007}
+  _addedNetworkObject: {fileID: 1151356777302297791}
+  _networkObjectCache: {fileID: 1151356777302297791}
   ammo: 30
   isAutomatic: 1
   fireCooldown: 1
-  range: 0
   bulletExit: {fileID: 2516348197705649140}
   minDmg: 4
   maxDmg: 2
   Knockback: 2
-  bulletPrfab: {fileID: 170948063539565404, guid: c8a0a24110431de48b80157a120e9304, type: 3}
-  bulletVelocity: 20
---- !u!114 &9210766822141351219
+  bulletPrefab: {fileID: 170948063539565404, guid: c8a0a24110431de48b80157a120e9304, type: 3}
+  bulletVelocity: 35
+--- !u!114 &689760476190879478
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -157,8 +157,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _componentIndexCache: 1
-  _addedNetworkObject: {fileID: 2665675700969505007}
-  _networkObjectCache: {fileID: 2665675700969505007}
+  _addedNetworkObject: {fileID: 1151356777302297791}
+  _networkObjectCache: {fileID: 1151356777302297791}
   _componentConfiguration: 0
   _synchronizeParent: 0
   _packing:
@@ -189,7 +189,7 @@ MonoBehaviour:
     X: 0
     Y: 0
     Z: 0
---- !u!114 &2665675700969505007
+--- !u!114 &1151356777302297791
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -206,21 +206,82 @@ MonoBehaviour:
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
   - {fileID: 3339886922688358805}
-  - {fileID: 9210766822141351219}
+  - {fileID: 689760476190879478}
   <SerializedRootNetworkBehaviour>k__BackingField: {fileID: 0}
   <NestedRootNetworkBehaviours>k__BackingField: []
   SerializedTransformProperties:
-    Position: {x: 1, y: 0, z: 0}
-    Rotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
-    LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 0}
+    LocalScale: {x: 0, y: 0, z: 0}
   _isNetworked: 1
   _isSpawnable: 1
   _isGlobal: 0
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
-  <PrefabId>k__BackingField: 0
+  _enablePrediction: 0
+  _predictionType: 0
+  _graphicalObject: {fileID: 0}
+  _enableStateForwarding: 1
+  _networkTransform: {fileID: 0}
+  _ownerInterpolation: 1
+  _enableTeleport: 0
+  _teleportThreshold: 1
+  <PrefabId>k__BackingField: 10
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 9062708015527346567
+--- !u!114 &7543519233263932885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9204693127586489091}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 180ecf9b41d478f468eb3e9083753217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ImpulseDefinition:
+    m_ImpulseChannel: 1
+    m_ImpulseShape: 1
+    m_CustomImpulseShape:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_ImpulseDuration: 0.2
+    m_ImpulseType: 0
+    m_DissipationRate: 0.25
+    m_RawSignal: {fileID: 0}
+    m_AmplitudeGain: 1
+    m_FrequencyGain: 1
+    m_RepeatMode: 0
+    m_Randomize: 1
+    m_TimeEnvelope:
+      m_AttackShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_DecayShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_AttackTime: 0
+      m_SustainTime: 0.2
+      m_DecayTime: 0.7
+      m_ScaleWithImpact: 1
+      m_HoldForever: 0
+    m_ImpactRadius: 100
+    m_DirectionMode: 0
+    m_DissipationMode: 2
+    m_DissipationDistance: 100
+    m_PropagationSpeed: 343
+  m_DefaultVelocity: {x: 0, y: -1, z: 0}

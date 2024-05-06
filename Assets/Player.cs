@@ -3,6 +3,9 @@ using FishNet.Connection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Scripting;
+using UnityEngine.U2D;
+using Cinemachine;
 
 public class Player : NetworkBehaviour
 {
@@ -19,6 +22,7 @@ public class Player : NetworkBehaviour
     bool isHovering;
     bool canAttack = true;
     public bool isDead = false;
+    private CinemachineImpulseSource impulseSource;
 
     private void OnMouseEnter()
     {
@@ -34,6 +38,11 @@ public class Player : NetworkBehaviour
         isHovering = false;
     }
 
+    private void Awake()
+    {
+        impulseSource = GetComponent<CinemachineImpulseSource>();
+    }
+
     public override void OnStartClient()
     {
         base.OnStartClient();
@@ -46,7 +55,7 @@ public class Player : NetworkBehaviour
 
     private void Update()
     {
-        if(!client)
+        if (!IsOwner)
         {
             return;
         }
@@ -66,6 +75,7 @@ public class Player : NetworkBehaviour
         if (Input.GetMouseButton(0))
         {
             Attack();
+            isPunchCooldown=true;
         }
     }
     public void Die()
@@ -108,17 +118,24 @@ public class Player : NetworkBehaviour
         }
         else
         {
-            Punch();
+            Punch(transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition), isPunchCooldown, punchRange, this, punchLineRenderer);
         }
     }
 
-    void Punch()
+    [ObserversRpc]
+    void SetPunchCooldown(Player player, bool newPunchCooldown)
     {
-        if (isPunchCooldown) { return; }
+        player.isPunchCooldown = newPunchCooldown;
+    }
+
+    [ServerRpc]
+    void Punch(Vector3 origin, Vector3 mousePos, bool isPunchCooldownL, float range, Player callback, GameObject punchLinePrefab)
+    {
+        if (isPunchCooldownL) { return; }
         RaycastHit punch;
-        Vector3 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-        Physics.Raycast(transform.position, dir, out punch, punchRange);
-        isPunchCooldown = true;
+        Vector3 dir = mousePos - origin;
+        Physics.Raycast(origin, dir, out punch, range);
+        callback.SetPunchCooldown(callback, true);
         if(punch.collider != null)
         {
             if (punch.collider.gameObject.tag == "Player")
@@ -126,7 +143,7 @@ public class Player : NetworkBehaviour
                 Player hitPlayer = punch.collider.gameObject.GetComponent<Player>();
                 hitPlayer.ServerSetHealth(hitPlayer.health - Random.Range(minPunchDmg, maxPunchDmg), hitPlayer);
                 hitPlayer.GetComponent<Rigidbody2D>().AddForce(dir * punchKB, ForceMode2D.Impulse);
-                SpawnPunchLineObject(transform.position, hitPlayer.gameObject.transform.position, punchLineRenderer);
+                SpawnPunchLineObject(origin, hitPlayer.gameObject.transform.position, punchLinePrefab);
             }
         }
         else
@@ -134,9 +151,11 @@ public class Player : NetworkBehaviour
             Vector3 endPoint;
             dir.x = Mathf.Clamp(dir.x, -punchRange, punchRange);
             dir.y = Mathf.Clamp(dir.y, -punchRange, punchRange);
-            endPoint = transform.position + (dir.normalized * punchRange);
-            SpawnPunchLineObject(transform.position, endPoint, punchLineRenderer);
+            endPoint = origin + (dir * punchRange);
+            SpawnPunchLineObject(origin, endPoint, punchLinePrefab);
         }
+        impulseSource.m_DefaultVelocity = dir.normalized;
+        impulseSource.GenerateImpulseWithForce(0.35f);
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -173,5 +192,14 @@ public class Player : NetworkBehaviour
         line.useWorldSpace = true;
         Vector3[] positions = new Vector3[] { startPos, endPos };
         line.SetPositions(positions);
+    }
+
+    public class Bullet
+    {
+        public Transform bulletTransform;
+        public Vector3 bulletDir;
+        public bool launched = false;
+        public Rigidbody2D BulletRb;
+        public float bulletVelocity;
     }
 }

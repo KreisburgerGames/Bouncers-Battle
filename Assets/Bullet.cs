@@ -1,62 +1,100 @@
+using FishNet;
+using FishNet.Managing.Server;
 using FishNet.Object;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using static Player;
+using static UnityEditor.PlayerSettings;
 
-public class Bullet : NetworkBehaviour
+public class Bullet : MonoBehaviour
 {
-    bool client = false;
     public int minDmg;
     public int maxDmg;
     public GameObject bulletDestroyParticle;
+    public int bulletID;
+    public int ownerID;
+    public float bulletVelocity;
+    Vector3 dir;
+    Rigidbody2D rb;
+    bool launched = false;
 
-    public override void OnStartClient()
+    public static Dictionary<int, Bullet> bullets = new Dictionary<int, Bullet>();
+    public List<State> pastStates = new List<State>();
+
+    private void Awake()
     {
-        base.OnStartClient();
-
-        if(base.IsOwner)
+        rb = GetComponent<Rigidbody2D>();
+        if (InstanceFinder.IsServer)
         {
-            client = true;
+            InstanceFinder.TimeManager.OnTick += OnTick;
         }
     }
 
-    [ServerRpc]
-    public void ServerSetVisible(GameObject obj)
+    private void OnTick()
     {
-        SetVisible(obj);
+        if(pastStates.Count > InstanceFinder.TimeManager.TickRate)
+        {
+            pastStates.RemoveAt(0);
+        }
+
+        pastStates.Add(new State() { position = transform.position });
+
+        foreach(var player in PlayerColliderRollback.Players.Values)
+        {
+            if(Vector2.Distance(transform.position, player.transform.position) > 3f)
+            {
+                continue;
+            }
+
+            if (player.CheckPastCollisions(this))
+            {
+                DestroyBullet();
+            }
+        }
     }
 
-    [ObserversRpc]
-    public void SetVisible(GameObject obj)
+    public void DestroyBullet()
     {
-        obj.GetComponent<SpriteRenderer>().enabled = true;
+        if (InstanceFinder.IsServer)
+        {
+            InstanceFinder.TimeManager.OnTick -= OnTick;
+        }
+
+        GameObject particleRef = Instantiate(bulletDestroyParticle);
+        particleRef.transform.position = transform.position;
+
+        bullets.Remove(bulletID);
+        Destroy(gameObject);
     }
 
-    [ServerRpc]
-    public void Hit(GameObject particle, Vector2 pos)
+    public void Init(Vector3 newDir, float newBulletVelocity, int newBulletID, int newOwnerID, int newMinDmg, int newMaxDmg, Vector2 startPos)
     {
-        GameObject particleRef = Instantiate(particle);
-        particleRef.transform.position = pos;
-        ServerManager.Spawn(particleRef);
-        ServerManager.Despawn(this.gameObject);
+        dir = newDir; bulletVelocity = newBulletVelocity; bulletID = newBulletID; ownerID = newOwnerID; minDmg = newMinDmg; maxDmg = newMaxDmg; transform.position = startPos;
+        bullets.Add(bulletID, this);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (!client)
+        if (collision.gameObject.tag == "Barrier")
         {
-            return;
+            DestroyBullet();
         }
-        if(collision.gameObject.tag == "Player")
+    }
+
+    private void Update()
+    {
+        if (!launched)
         {
-            Player player = collision.gameObject.GetComponent<Player>();
-            player.ServerSetHealth(player, player.health - Random.Range(minDmg, maxDmg));
-            if(player.health <= 0)
-            {
-                player.Die();
-            }
+            rb.AddForce(dir * bulletVelocity, ForceMode2D.Impulse);
+            launched = true;
         }
-        Hit(bulletDestroyParticle, transform.position);
+    }
+
+    public class State
+    {
+        public Vector2 position;
     }
 }

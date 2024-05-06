@@ -23,10 +23,16 @@ public class LineDecayNetworked : NetworkBehaviour
         if(!client) { return; }
         width -= decayRate * Time.deltaTime;
         ServerSetAlphaChannel(gameObject, width);
-        if(width == 0f)
+        if(width <= 0f)
         {
-            ServerManager.Despawn(this.gameObject, DespawnType.Destroy);
+            Despawn(this.gameObject);
         }
+    }
+
+    [ServerRpc]
+    private void Despawn(GameObject line)
+    {
+        ServerManager.Despawn(line, DespawnType.Destroy);
     }
 
     [ServerRpc]

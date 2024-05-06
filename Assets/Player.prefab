@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6343581234685769514}
   - component: {fileID: 3957759328808666549}
+  - component: {fileID: -8287713451081868624}
   - component: {fileID: 7771729104192040455}
   - component: {fileID: 8150124203046842867}
   - component: {fileID: 3700985883371001143}
@@ -21,6 +22,7 @@ GameObject:
   - component: {fileID: 8064289192580047715}
   - component: {fileID: 7311435157635830930}
   - component: {fileID: -7408214027567170888}
+  - component: {fileID: -7161431365715957172}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -95,6 +97,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-8287713451081868624
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1894789409805677966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98a92121500d4a74aaa04fa81312c248, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _componentIndexCache: 0
+  _addedNetworkObject: {fileID: 1003659968581309988}
+  _networkObjectCache: {fileID: 1003659968581309988}
 --- !u!50 &7771729104192040455
 Rigidbody2D:
   serializedVersion: 4
@@ -134,7 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7c03ce89f1cb5f4db333da3ff5c9125, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 0
+  _componentIndexCache: 1
   _addedNetworkObject: {fileID: 1003659968581309988}
   _networkObjectCache: {fileID: 1003659968581309988}
   throwForce: 0.07
@@ -364,7 +381,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2836e36774ca1c4bbbee976e17b649c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 1
+  _componentIndexCache: 2
   _addedNetworkObject: {fileID: 1003659968581309988}
   _networkObjectCache: {fileID: 1003659968581309988}
   _componentConfiguration: 3
@@ -413,11 +430,13 @@ MonoBehaviour:
   <ComponentIndex>k__BackingField: 0
   <PredictedSpawn>k__BackingField: {fileID: 0}
   _networkBehaviours:
+  - {fileID: -8287713451081868624}
   - {fileID: 8150124203046842867}
   - {fileID: -93176758341083922}
   - {fileID: -1396820515548491854}
   - {fileID: 8064289192580047715}
   - {fileID: 7311435157635830930}
+  - {fileID: -7408214027567170888}
   <SerializedRootNetworkBehaviour>k__BackingField: {fileID: 0}
   <NestedRootNetworkBehaviours>k__BackingField: []
   SerializedTransformProperties:
@@ -438,7 +457,7 @@ MonoBehaviour:
   _ownerInterpolation: 1
   _enableTeleport: 0
   _teleportThreshold: 1
-  <PrefabId>k__BackingField: 19
+  <PrefabId>k__BackingField: 16
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 0
   <SceneId>k__BackingField: 0
@@ -470,7 +489,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3da71c26e1196f94c8f8e2e923d25b74, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 2
+  _componentIndexCache: 3
   _addedNetworkObject: {fileID: 1003659968581309988}
   _networkObjectCache: {fileID: 1003659968581309988}
   objToSpawn: {fileID: 0}
@@ -487,11 +506,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ea08ac5bab4bc74d81ede557a268232, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 3
+  _componentIndexCache: 4
   _addedNetworkObject: {fileID: 1003659968581309988}
   _networkObjectCache: {fileID: 1003659968581309988}
   health: 100
-  punchRange: 2
+  punchRange: 1.5
   minPunchDmg: 1
   maxPunchDmg: 2
   punchKB: 1
@@ -510,7 +529,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be3cb2952c351714c963b0766f53cef3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 4
+  _componentIndexCache: 5
   _addedNetworkObject: {fileID: 1003659968581309988}
   _networkObjectCache: {fileID: 1003659968581309988}
   _maximumSimultaneousHits: 16
@@ -528,10 +547,63 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01a271dd97d875347b0cea860df29a9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _componentIndexCache: 255
+  _componentIndexCache: 6
   _addedNetworkObject: {fileID: 1003659968581309988}
-  _networkObjectCache: {fileID: 0}
+  _networkObjectCache: {fileID: 1003659968581309988}
   _boundingBox: 0
   _physicsType: 1
   _boundingBoxSize: {x: 3, y: 3, z: 3}
   _colliderParents: []
+--- !u!114 &-7161431365715957172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1894789409805677966}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 180ecf9b41d478f468eb3e9083753217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ImpulseDefinition:
+    m_ImpulseChannel: 1
+    m_ImpulseShape: 1
+    m_CustomImpulseShape:
+      serializedVersion: 2
+      m_Curve: []
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+    m_ImpulseDuration: 0.2
+    m_ImpulseType: 0
+    m_DissipationRate: 0.25
+    m_RawSignal: {fileID: 0}
+    m_AmplitudeGain: 1
+    m_FrequencyGain: 1
+    m_RepeatMode: 0
+    m_Randomize: 1
+    m_TimeEnvelope:
+      m_AttackShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_DecayShape:
+        serializedVersion: 2
+        m_Curve: []
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 4
+      m_AttackTime: 0
+      m_SustainTime: 0.2
+      m_DecayTime: 0.7
+      m_ScaleWithImpact: 1
+      m_HoldForever: 0
+    m_ImpactRadius: 100
+    m_DirectionMode: 0
+    m_DissipationMode: 2
+    m_DissipationDistance: 100
+    m_PropagationSpeed: 343
+  m_DefaultVelocity: {x: -1, y: 1, z: 0}

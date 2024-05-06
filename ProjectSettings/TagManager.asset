@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - PlayerListContent
+  - Barrier
   layers:
   - Default
   - TransparentFX
