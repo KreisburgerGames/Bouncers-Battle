@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Scripting;
 using UnityEngine.U2D;
 using Cinemachine;
+using UnityEditor;
 
 public class Player : NetworkBehaviour
 {
@@ -23,6 +24,9 @@ public class Player : NetworkBehaviour
     bool canAttack = true;
     public bool isDead = false;
     private CinemachineImpulseSource impulseSource;
+    public float punchGlowHeightMultiplier = 1.1f;
+    public float punchGlowCapsuleOffset = 0.2f;
+    public float punchGlowRadiusMultipier = 1.2f;
 
     private void OnMouseEnter()
     {
@@ -143,7 +147,7 @@ public class Player : NetworkBehaviour
                 Player hitPlayer = punch.collider.gameObject.GetComponent<Player>();
                 hitPlayer.ServerSetHealth(hitPlayer.health - Random.Range(minPunchDmg, maxPunchDmg), hitPlayer);
                 hitPlayer.GetComponent<Rigidbody2D>().AddForce(dir * punchKB, ForceMode2D.Impulse);
-                SpawnPunchLineObject(origin, hitPlayer.gameObject.transform.position, punchLinePrefab);
+                SpawnPunchLineObject(origin, hitPlayer.gameObject.transform.position, punchLinePrefab, Owner, dir, punchGlowRadiusMultipier, punchGlowCapsuleOffset);
             }
         }
         else
@@ -152,7 +156,7 @@ public class Player : NetworkBehaviour
             dir.x = Mathf.Clamp(dir.x, -punchRange, punchRange);
             dir.y = Mathf.Clamp(dir.y, -punchRange, punchRange);
             endPoint = origin + (dir * punchRange);
-            SpawnPunchLineObject(origin, endPoint, punchLinePrefab);
+            SpawnPunchLineObject(origin, endPoint, punchLinePrefab, Owner, dir, punchGlowRadiusMultipier, punchGlowCapsuleOffset);
         }
         impulseSource.m_DefaultVelocity = dir.normalized;
         impulseSource.GenerateImpulseWithForce(0.35f);
@@ -178,27 +182,31 @@ public class Player : NetworkBehaviour
     }
 
     [ServerRpc]
-    private void SpawnPunchLineObject(Vector3 startPos, Vector3 endPos, GameObject gameObject)
+    private void SpawnPunchLineObject(Vector3 startPos, Vector3 endPos, GameObject gameObject, NetworkConnection owner, Vector3 dir, float radiusM, float offset)
     {
         GameObject spawnedLine = Instantiate(gameObject);
         spawnedLine.transform.position = startPos;
-        ServerManager.Spawn(spawnedLine, scene: UnityEngine.SceneManagement.SceneManager.GetSceneByBuildIndex(2), ownerConnection: Owner);
-        ServerSetLine(startPos, endPos, spawnedLine);
-    }
-
-    [ServerRpc]
-    private void ServerSetLine(Vector3 startPos, Vector3 endPos, GameObject gameObject)
-    {
-        SetLine(startPos, endPos, gameObject);
+        ServerManager.Spawn(spawnedLine, scene: UnityEngine.SceneManagement.SceneManager.GetSceneByBuildIndex(2), ownerConnection: owner);
+        float len = Vector2.Distance(startPos, endPos);
+        len *= punchGlowHeightMultiplier;
+        ServerSetLine(startPos, endPos, spawnedLine, len, radiusM, offset);
     }
 
     [ObserversRpc]
-    private void SetLine(Vector3 startPos, Vector3 endPos, GameObject gameObject)
+    private void ServerSetLine(Vector3 startPos, Vector3 endPos, GameObject gameObjectRef, float length, float radiusM, float offset)
     {
-        LineRenderer line = gameObject.GetComponent<LineRenderer>();
+        LineRenderer line = gameObjectRef.GetComponent<LineRenderer>();
+        float angle = Mathf.Rad2Deg * (Mathf.Atan2(endPos.y - startPos.y, endPos.x - startPos.x));
+        print(startPos);
+        print(endPos);
+        line.gameObject.transform.localRotation = Quaternion.Euler(0, 0, angle);
         line.useWorldSpace = true;
         Vector3[] positions = new Vector3[] { startPos, endPos };
         line.SetPositions(positions);
+        line.gameObject.GetComponent<CapsuleCollider>().height = length + offset;
+        line.gameObject.GetComponent<CapsuleCollider>().center = new Vector3((length/2) + offset, 0, 0);
+        float radius = line.gameObject.GetComponent<CapsuleCollider>().radius * radiusM;
+        line.gameObject.GetComponent<CapsuleCollider>().radius = radius;
     }
 
     public class Bullet

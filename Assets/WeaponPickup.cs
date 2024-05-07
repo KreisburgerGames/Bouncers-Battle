@@ -30,23 +30,23 @@ public class WeaponPickup : NetworkBehaviour
             if(collision.gameObject.tag == "Player")
             {
                 NetworkConnection playerCon = collision.gameObject.GetComponent<Player>().Owner;
-                GameObject playerObj = collision.gameObject;
-                GameObject weaponRef = Instantiate(weapon);
-                weaponRef.transform.SetParent(transform, false);
-                ServerSpawnWeaponToPlayer(weaponRef, playerCon, this.gameObject);
+                Transform parent = collision.gameObject.transform;
+                ServerSpawnWeaponToPlayer(weapon, playerCon, this.gameObject, parent);
                 ServerSetCollected(this);
             }
         }
     }
 
-    [ServerRpc]
-    void ServerSpawnWeaponToPlayer(GameObject weapon, NetworkConnection connection, GameObject thisRef)
+    [ServerRpc(RequireOwnership = false)]
+    void ServerSpawnWeaponToPlayer(GameObject weapon, NetworkConnection connection, GameObject thisRef, Transform setParent)
     {
-        ServerManager.Spawn(weapon, ownerConnection: connection);
+        GameObject weaponRef = Instantiate(weapon);
+        weaponRef.transform.SetParent(setParent, false);
+        ServerManager.Spawn(weaponRef, ownerConnection: connection);
         ServerManager.Despawn(thisRef, DespawnType.Destroy);
     }
 
-    [ServerRpc]
+    [ServerRpc(RequireOwnership = false)]
     void ServerSetCollected(WeaponPickup script)
     {
         SetCollected(script);

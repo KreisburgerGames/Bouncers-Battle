@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 7311435157635830930}
   - component: {fileID: -7408214027567170888}
   - component: {fileID: -7161431365715957172}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -459,7 +459,7 @@ MonoBehaviour:
   _teleportThreshold: 1
   <PrefabId>k__BackingField: 16
   <SpawnableCollectionId>k__BackingField: 0
-  _scenePathHash: 0
+  _scenePathHash: 774665742
   <SceneId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 16799108592042421765
 --- !u!114 &4550141182693624460
@@ -517,6 +517,9 @@ MonoBehaviour:
   punchCooldown: 1
   punchLineRenderer: {fileID: 4121207434280794034, guid: cd20146277fb40f448c5fd0795071ae1, type: 3}
   isDead: 0
+  punchGlowHeightMultiplier: 1.05
+  punchGlowCapsuleOffset: 0.3
+  punchGlowRadiusMultipier: 1.25
 --- !u!114 &7311435157635830930
 MonoBehaviour:
   m_ObjectHideFlags: 0

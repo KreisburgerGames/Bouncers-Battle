@@ -14,6 +14,8 @@ GameObject:
   - component: {fileID: 8156160679557322015}
   - component: {fileID: 491561029611733035}
   - component: {fileID: 2210152834185005485}
+  - component: {fileID: -5544716835700801387}
+  - component: {fileID: -4995672025878782582}
   m_Layer: 0
   m_Name: PunchLineRender
   m_TagString: Untagged
@@ -76,7 +78,7 @@ MonoBehaviour:
   _teleportThreshold: 1
   <PrefabId>k__BackingField: 3
   <SpawnableCollectionId>k__BackingField: 0
-  _scenePathHash: 774665742
+  _scenePathHash: 0
   <SceneId>k__BackingField: 0
   <AssetPathHash>k__BackingField: 4147674142994487727
 --- !u!114 &5409157960395706806
@@ -259,4 +261,46 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 8494333049995569934}
   _networkObjectCache: {fileID: 8494333049995569934}
   decayRate: 1
+  bloomDecayRate: 4
+  bloomColorDecayRate: 2
   width: 0.32
+--- !u!114 &-5544716835700801387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4121207434280794034}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 0
+  priority: 0
+  blendDistance: 100
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: caf4abe4383fcff408754ca22a0b3068, type: 2}
+--- !u!136 &-4995672025878782582
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4121207434280794034}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.3
+  m_Height: 1
+  m_Direction: 0
+  m_Center: {x: 0, y: 0, z: 0.5}
