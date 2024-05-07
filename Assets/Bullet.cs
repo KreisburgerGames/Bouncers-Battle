@@ -1,4 +1,5 @@
 using FishNet;
+using FishNet.Connection;
 using FishNet.Managing.Server;
 using FishNet.Object;
 using System.Collections;
@@ -20,6 +21,7 @@ public class Bullet : MonoBehaviour
     Vector3 dir;
     Rigidbody2D rb;
     bool launched = false;
+    public float hitShakeStrength;
 
     public static Dictionary<int, Bullet> bullets = new Dictionary<int, Bullet>();
     public List<State> pastStates = new List<State>();
@@ -51,9 +53,15 @@ public class Bullet : MonoBehaviour
 
             if (player.CheckPastCollisions(this))
             {
+                ShakeEnemyScreen(player.Owner, dir, hitShakeStrength);
                 DestroyBullet();
             }
         }
+    }
+
+    void ShakeEnemyScreen(NetworkConnection conn, Vector2 shakeDir, float shakeStrength)
+    {
+        FindFirstObjectByType<Player>().ShakeEnemyScreen(conn, shakeDir, shakeStrength);
     }
 
     public void DestroyBullet()
@@ -70,9 +78,9 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void Init(Vector3 newDir, float newBulletVelocity, int newBulletID, int newOwnerID, int newMinDmg, int newMaxDmg, Vector2 startPos)
+    public void Init(Vector3 newDir, float newBulletVelocity, int newBulletID, int newOwnerID, int newMinDmg, int newMaxDmg, Vector2 startPos, float newHitShakeStrength)
     {
-        dir = newDir; bulletVelocity = newBulletVelocity; bulletID = newBulletID; ownerID = newOwnerID; minDmg = newMinDmg; maxDmg = newMaxDmg; transform.position = startPos;
+        dir = newDir; bulletVelocity = newBulletVelocity; bulletID = newBulletID; ownerID = newOwnerID; minDmg = newMinDmg; maxDmg = newMaxDmg; transform.position = startPos; hitShakeStrength = newHitShakeStrength;
         bullets.Add(bulletID, this);
     }
 

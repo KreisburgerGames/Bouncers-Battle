@@ -23,6 +23,7 @@ public class WeaponBase : NetworkBehaviour
     Player owner;
     public float visualRecoilForce = 1;
     CinemachineImpulseSource impulseSource;
+    public float hitShakeStrength = 1f;
 
     private void Awake()
     {
@@ -66,7 +67,7 @@ public class WeaponBase : NetworkBehaviour
     private void SpawnBulletLocal(Vector3 startPos, Vector3 dir, int newBulletID, int ownerID)
     {
         Bullet bullet = Instantiate(bulletPrefab, startPos, Quaternion.Euler(dir)).GetComponent<Bullet>();
-        bullet.Init(dir, bulletVelocity, newBulletID, ownerID, minDmg, maxDmg, startPos);
+        bullet.Init(dir, bulletVelocity, newBulletID, ownerID, minDmg, maxDmg, startPos, hitShakeStrength);
     }
 
     [ServerRpc]
@@ -83,7 +84,7 @@ public class WeaponBase : NetworkBehaviour
         Vector3 spawnPos = startPos + dir * bulletVelocity * timeDifference;
 
         Bullet bullet = Instantiate(bulletPrefab, spawnPos, Quaternion.Euler(dir)).GetComponent<Bullet>();
-        bullet.Init(dir, bulletVelocity, bulletID, ownerID, newMinDmg, newMaxDmg, startPos);
+        bullet.Init(dir, bulletVelocity, bulletID, ownerID, newMinDmg, newMaxDmg, startPos, hitShakeStrength);
     }
 
     private void Update()

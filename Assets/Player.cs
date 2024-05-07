@@ -164,6 +164,13 @@ public class Player : NetworkBehaviour
         SetHealth(newHealth, player);
     }
 
+    [TargetRpc]
+    public void ShakeEnemyScreen(NetworkConnection conn, Vector2 shakeDir, float shakeStrength)
+    {
+        impulseSource.m_DefaultVelocity = shakeDir;
+        impulseSource.GenerateImpulseWithForce(shakeStrength);
+    }
+
     [ObserversRpc]
     private void SetHealth(int newHealth, Player player)
     {

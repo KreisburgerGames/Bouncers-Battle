@@ -63,6 +63,14 @@ MonoBehaviour:
   _initializeOrder: 0
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
+  _enablePrediction: 0
+  _predictionType: 0
+  _graphicalObject: {fileID: 0}
+  _enableStateForwarding: 1
+  _networkTransform: {fileID: 0}
+  _ownerInterpolation: 1
+  _enableTeleport: 0
+  _teleportThreshold: 1
   <PrefabId>k__BackingField: 0
   <SpawnableCollectionId>k__BackingField: 0
   _scenePathHash: 774665742
@@ -99,3 +107,9 @@ MonoBehaviour:
   _addedNetworkObject: {fileID: 4802236669844088770}
   _networkObjectCache: {fileID: 4802236669844088770}
   round: 0
+  roundTime: 0
+  minWeaponSpawnTime: 3
+  maxWeaponSpawnTime: 10
+  weaponPickupPrefabs:
+  - {fileID: 868160311977736765, guid: e89812604dd3a694cbfe5a30f06b6b19, type: 3}
+  weaponSpawnPadding: 0.5

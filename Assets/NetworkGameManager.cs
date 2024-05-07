@@ -3,6 +3,7 @@ using FishNet.Connection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class NetworkGameManager : NetworkBehaviour
 {
@@ -10,6 +11,13 @@ public class NetworkGameManager : NetworkBehaviour
     public float roundTime = 0f;
     bool client = false;
     bool counting = false;
+    public float minWeaponSpawnTime = 3f;
+    public float maxWeaponSpawnTime = 10f;
+    private float weaponSpawnTime;
+    int playerCount;
+    bool spawnedWeapons = false;
+    public List<GameObject> weaponPickupPrefabs = new List<GameObject>();
+    public float weaponSpawnPadding = .5f;
 
     public override void OnStartClient()
     {
@@ -18,11 +26,14 @@ public class NetworkGameManager : NetworkBehaviour
         if (base.IsOwner)
         {
             client = true;
+            weaponSpawnTime = Random.Range(minWeaponSpawnTime, maxWeaponSpawnTime);
+            ServerSetCounting(this, true, 0);
         }
     }
 
     private void Update()
     {
+        playerCount = FindObjectsOfType<Player>().Length;
         // Local Code
         if (counting)
         {
@@ -30,6 +41,26 @@ public class NetworkGameManager : NetworkBehaviour
         }
         if (!client) return;
         // Server Code
+        if (roundTime >= weaponSpawnTime && !spawnedWeapons)
+        {
+            //int weaponsToSpawn = playerCount - Random.Range(1, (int)Mathf.Ceil(playerCount / 3));
+            int weaponsToSpawn = playerCount;
+            for (int i = 0; i < weaponsToSpawn; i++)
+            {
+                float width = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0f, 0f)), Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0f))) * 0.5f;
+                float height = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0f, 0f)), Camera.main.ScreenToWorldPoint(new Vector2(0f, Screen.height))) * 0.5f;
+                GameObject weaponPickup = Instantiate(weaponPickupPrefabs[Random.Range(0, weaponPickupPrefabs.Count - 1)]);
+                weaponPickup.transform.position = new Vector2(Random.Range(-width + weaponSpawnPadding, width - weaponSpawnPadding), Random.Range(-height + weaponSpawnPadding, height - weaponSpawnPadding));
+                ServerSpawnWeaponPickup(weaponPickup);
+            }
+            spawnedWeapons = true;
+        }
+    }
+
+    [ServerRpc]
+    void ServerSpawnWeaponPickup(GameObject weaponPickupSpawn)
+    {
+        ServerManager.Spawn(weaponPickupSpawn);
     }
 
     [ServerRpc]
