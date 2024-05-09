@@ -264,6 +264,7 @@ MonoBehaviour:
   bloomDecayRate: 4
   bloomColorDecayRate: 2
   width: 0.32
+  chromaticAberrationDecayRate: 3
 --- !u!114 &-5544716835700801387
 MonoBehaviour:
   m_ObjectHideFlags: 0

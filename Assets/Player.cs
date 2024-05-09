@@ -27,6 +27,7 @@ public class Player : NetworkBehaviour
     public float punchGlowHeightMultiplier = 1.1f;
     public float punchGlowCapsuleOffset = 0.2f;
     public float punchGlowRadiusMultipier = 1.2f;
+    public float punchShakeForce = 0.5f;
 
     private void OnMouseEnter()
     {
@@ -146,7 +147,7 @@ public class Player : NetworkBehaviour
             {
                 Player hitPlayer = punch.collider.gameObject.GetComponent<Player>();
                 hitPlayer.ServerSetHealth(hitPlayer.health - Random.Range(minPunchDmg, maxPunchDmg), hitPlayer);
-                hitPlayer.GetComponent<Rigidbody2D>().AddForce(dir * punchKB, ForceMode2D.Impulse);
+                ServerKnockbackPlayer(hitPlayer.Owner, dir, punchKB, hitPlayer.gameObject);
                 SpawnPunchLineObject(origin, hitPlayer.gameObject.transform.position, punchLinePrefab, Owner, dir, punchGlowRadiusMultipier, punchGlowCapsuleOffset);
             }
         }
@@ -159,7 +160,19 @@ public class Player : NetworkBehaviour
             SpawnPunchLineObject(origin, endPoint, punchLinePrefab, Owner, dir, punchGlowRadiusMultipier, punchGlowCapsuleOffset);
         }
         impulseSource.m_DefaultVelocity = dir.normalized;
-        impulseSource.GenerateImpulseWithForce(0.35f);
+        impulseSource.GenerateImpulseWithForce(punchShakeForce);
+    }
+
+    [ServerRpc]
+    private void ServerKnockbackPlayer(NetworkConnection conn, Vector3 dir, float force, GameObject obj)
+    {
+        KnockbackPlayer(conn, dir, force, obj);
+    }
+
+    [TargetRpc]
+    private void KnockbackPlayer(NetworkConnection conn, Vector3 dir, float force, GameObject obj)
+    {
+        obj.GetComponent<Rigidbody2D>().AddForce(dir * force, ForceMode2D.Impulse);
     }
 
     [ServerRpc(RequireOwnership = false)]

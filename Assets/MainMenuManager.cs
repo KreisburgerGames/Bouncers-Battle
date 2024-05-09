@@ -12,9 +12,12 @@ public class MainMenuManager : MonoBehaviour
 {
     private static MainMenuManager instance;
 
-    [SerializeField] private GameObject menuScreen;
+    [SerializeField] private GameObject choiceScreen;
+    [SerializeField] private GameObject choiceScreenNonPostProcess;
     [SerializeField] private GameObject lobbyScreen;
     [SerializeField] private GameObject loadingScreen;
+    [SerializeField] private GameObject menuScreen;
+    [SerializeField] private GameObject settingsScreen;
     [SerializeField] private TMP_InputField lobbyInput;
     [SerializeField] private TMP_Text lobbyTitle, lobbyIDText;
     [SerializeField] private Button startGameButton;
@@ -24,7 +27,21 @@ public class MainMenuManager : MonoBehaviour
     public float findPlayerLeaveBuffer = 1f;
     float findPlayerLeaveBufferTimer = 0f;
     bool localPlayerFound = false;
+    public Menu currentScreen = Menu.Main;
 
+    public enum Menu
+    {
+        Main,
+        Settings,
+        Lobby,
+        HostOrJoin,
+        Loading
+    }
+
+    public static Menu GetMenu()
+    {
+        return instance.currentScreen;
+    }
     private void Awake()
     {
         instance = this;
@@ -52,7 +69,7 @@ public class MainMenuManager : MonoBehaviour
         if (BootstrapManager.failedJoinByID)
         {
             CloseAllScreens();
-            OpenMainMenu();
+            OpenChoiceMenu();
             BootstrapManager.failedJoinByID = false;
         }
         if (FindFirstObjectByType<PlayerSpawner>() == null)
@@ -97,9 +114,13 @@ public class MainMenuManager : MonoBehaviour
 
     private void Start()
     {
-        CloseAllScreens();
-        OpenMainMenu();
+        MainMenuScreen();
         SteamAPI.Init();
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
     }
 
     public void CreateLobby()
@@ -127,31 +148,53 @@ public class MainMenuManager : MonoBehaviour
         instance.lobbyTitle.text = lobbyName;
         instance.lobbyIDText.text = BootstrapManager.CurrentLobbyID.ToString();
         instance.startGameButton.gameObject.SetActive(isHost);
-        instance.CloseAllScreens();
         instance.OpenLobbyScreen();
     }
 
-    public void OpenMainMenu()
+    public void OpenChoiceMenu()
     {
-        menuScreen.SetActive(true);
+        CloseAllScreens();
+        currentScreen = Menu.HostOrJoin;
+        choiceScreen.SetActive(true);
+        choiceScreenNonPostProcess.SetActive(true);
+    }
+
+    public void OpenSettingsMenu()
+    {
+        CloseAllScreens();
+        currentScreen = Menu.Settings;
+        settingsScreen.SetActive(true);
     }
 
     public void LoadingScreen()
     {
         CloseAllScreens();
+        currentScreen = Menu.Loading;
         loadingScreen.SetActive(true);
+    }
+
+    public void MainMenuScreen()
+    {
+        CloseAllScreens();
+        currentScreen = Menu.Main;
+        menuScreen.SetActive(true);
     }
 
     public void OpenLobbyScreen()
     {
+        CloseAllScreens();
+        currentScreen = Menu.Lobby;
         lobbyScreen.SetActive(true);
     }
 
     public void CloseAllScreens()
     {
-        menuScreen.SetActive(false);
+        choiceScreen.SetActive(false);
         lobbyScreen.SetActive(false);
         loadingScreen.SetActive(false);
+        menuScreen.SetActive(false);
+        settingsScreen.SetActive(false);
+        choiceScreenNonPostProcess.SetActive(false);
     }
 
     public void LeaveLobby()
@@ -172,7 +215,7 @@ public class MainMenuManager : MonoBehaviour
         localPlayer = null;
         localPlayerFound = false;
         CloseAllScreens();
-        OpenMainMenu();
+        OpenChoiceMenu();
     }
 
     public void JoinLobby()

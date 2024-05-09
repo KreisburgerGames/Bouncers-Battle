@@ -520,6 +520,7 @@ MonoBehaviour:
   punchGlowHeightMultiplier: 1.05
   punchGlowCapsuleOffset: 0.3
   punchGlowRadiusMultipier: 1.25
+  punchShakeForce: 0.7
 --- !u!114 &7311435157635830930
 MonoBehaviour:
   m_ObjectHideFlags: 0
