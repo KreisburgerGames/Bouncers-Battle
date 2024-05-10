@@ -450,8 +450,8 @@ MonoBehaviour:
   _defaultDespawnType: 0
   NetworkObserver: {fileID: 0}
   _enablePrediction: 0
-  _predictionType: 0
-  _graphicalObject: {fileID: 0}
+  _predictionType: 2
+  _graphicalObject: {fileID: 6343581234685769514}
   _enableStateForwarding: 1
   _networkTransform: {fileID: 0}
   _ownerInterpolation: 1
