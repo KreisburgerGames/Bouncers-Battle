@@ -15,13 +15,16 @@ public class LineDecayNetworked : NetworkBehaviour
     public float bloomColorDecayRate;
     public float width = 1f;
     Bloom bloom;
+    ChromaticAberration ca;
     float minBloom;
+    public float chromaticAberrationDecayRate = 1f;
 
     private void Awake()
     {
         GetComponent<Volume>().profile.TryGet<Bloom>(out bloom);
         FindFirstObjectByType<CinemachineVirtualCamera>().gameObject.GetComponent<Volume>().profile.TryGet<Bloom>(out Bloom mainBloom);
         minBloom = mainBloom.intensity.value;
+        GetComponent<Volume>().profile.TryGet<ChromaticAberration>(out ca);
     }
 
     // Update is called once per frame
@@ -37,6 +40,7 @@ public class LineDecayNetworked : NetworkBehaviour
         currentS -= bloomColorDecayRate * Time.deltaTime;
         Color newColor = Color.HSVToRGB(h, currentS, v);
         bloom.tint.value = newColor;
+        ca.intensity.value -= chromaticAberrationDecayRate * Time.deltaTime;
         if (width <= 0f)
         {
             Destroy(this.gameObject);
