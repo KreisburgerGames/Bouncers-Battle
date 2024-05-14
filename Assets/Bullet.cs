@@ -32,7 +32,7 @@ public class Bullet : MonoBehaviour
             InstanceFinder.TimeManager.OnTick += OnTick;
         }
     }
-
+    
     private void OnTick()
     {
         if(pastStates.Count > InstanceFinder.TimeManager.TickRate)
@@ -40,7 +40,7 @@ public class Bullet : MonoBehaviour
             pastStates.RemoveAt(0);
         }
 
-        pastStates.Add(new State() { position = transform.position });
+        pastStates.Add(new State() { Position = transform.position });
 
         foreach(var player in PlayerColliderRollback.Players.Values)
         {
@@ -84,7 +84,7 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.tag == "Barrier")
+        if (collision.gameObject.CompareTag("Barrier"))
         {
             DestroyBullet();
         }
@@ -101,6 +101,6 @@ public class Bullet : MonoBehaviour
 
     public class State
     {
-        public Vector2 position;
+        public Vector2 Position;
     }
 }

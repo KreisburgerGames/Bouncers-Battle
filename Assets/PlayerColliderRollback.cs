@@ -53,7 +53,7 @@ public class PlayerColliderRollback : NetworkBehaviour
         for (int i = 0; i < Mathf.Min(_pastStates.Count, bullet.pastStates.Count); i++)
         {
             Vector3 playerPosition = _pastStates[i].Position;
-            Vector3 bulletPosition = bullet.pastStates[i].position;
+            Vector3 bulletPosition = bullet.pastStates[i].Position;
 
             float bulletRadius = bullet.transform.localScale.x; // Define your bullet radius
 
