@@ -59,32 +59,34 @@ public class WeaponBase : NetworkBehaviour
                 bulletID = Random.Range(100000, 999999);
             }
         }
-        SpawnBulletLocal(startPos, dir, bulletID, Owner.ClientId);
-        SpawnBullet(startPos, dir, TimeManager.Tick, GetComponentInParent<Player>(), Owner.ClientId, bulletID, minDmg, maxDmg);
+        Vector3 mousePos = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
+        Vector3 aimingDir = (mousePos - transform.position).normalized;
+        float aimingAngle = Mathf.Atan2(aimingDir.y, aimingDir.x) * Mathf.Rad2Deg;
+        SpawnBulletLocal(startPos, dir, bulletID, Owner.ClientId, aimingAngle);
+        SpawnBullet(startPos, dir, TimeManager.Tick, GetComponentInParent<Player>(), Owner.ClientId, bulletID, minDmg, maxDmg, aimingAngle);
         impulseSource.m_DefaultVelocity = dir.normalized;
         impulseSource.GenerateImpulseWithForce(visualRecoilForce);
     }
-    private void SpawnBulletLocal(Vector3 startPos, Vector3 dir, int newBulletID, int ownerID)
+    private void SpawnBulletLocal(Vector3 startPos, Vector3 dir, int newBulletID, int ownerID, float angle)
     {
         Bullet bullet = Instantiate(bulletPrefab, startPos, Quaternion.Euler(dir)).GetComponent<Bullet>();
-        bullet.Init(dir, bulletVelocity, newBulletID, ownerID, minDmg, maxDmg, startPos, hitShakeStrength);
+        bullet.Init(dir, bulletVelocity, newBulletID, ownerID, minDmg, maxDmg, startPos, hitShakeStrength, angle);
     }
 
     [ServerRpc]
-    private void SpawnBullet(Vector3 startPos, Vector3 dir, uint startTick, Player ownerRef, int bulletID, int ownerID, int newMinDmg, int newMaxDmg)
+    private void SpawnBullet(Vector3 startPos, Vector3 dir, uint startTick, Player ownerRef, int bulletID, int ownerID, int newMinDmg, int newMaxDmg, float angle)
     {
-        SpawnBulletServer(startPos, dir, startTick, ownerRef, bulletID, ownerID, newMinDmg, newMaxDmg);
-        
+        SpawnBulletServer(startPos, dir, startTick, ownerRef, bulletID, ownerID, newMinDmg, newMaxDmg, angle);
     }
 
     [ObserversRpc(ExcludeOwner = true)]
-    private void SpawnBulletServer(Vector3 startPos, Vector3 dir, uint startTick, Player ownerRef, int bulletID, int ownerID, int newMinDmg, int newMaxDmg)
+    private void SpawnBulletServer(Vector3 startPos, Vector3 dir, uint startTick, Player ownerRef, int bulletID, int ownerID, int newMinDmg, int newMaxDmg, float angle)
     {
         float timeDifference = (float)(TimeManager.Tick - startTick) / TimeManager.TickRate;
         Vector3 spawnPos = startPos + dir * bulletVelocity * timeDifference;
 
         Bullet bullet = Instantiate(bulletPrefab, spawnPos, Quaternion.Euler(dir)).GetComponent<Bullet>();
-        bullet.Init(dir, bulletVelocity, bulletID, ownerID, newMinDmg, newMaxDmg, startPos, hitShakeStrength);
+        bullet.Init(dir, bulletVelocity, bulletID, ownerID, newMinDmg, newMaxDmg, startPos, hitShakeStrength, angle);
     }
 
     private void Update()

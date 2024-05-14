@@ -61,7 +61,7 @@ Transform:
   m_GameObject: {fileID: 9204693127586489091}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 1, y: 0, z: 0}
+  m_LocalPosition: {x: 1.1, y: 0, z: 0}
   m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -144,6 +144,8 @@ MonoBehaviour:
   Knockback: 2
   bulletPrefab: {fileID: 170948063539565404, guid: c8a0a24110431de48b80157a120e9304, type: 3}
   bulletVelocity: 35
+  visualRecoilForce: 1
+  hitShakeStrength: 1
 --- !u!114 &689760476190879478
 MonoBehaviour:
   m_ObjectHideFlags: 0
