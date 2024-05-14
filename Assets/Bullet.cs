@@ -20,6 +20,7 @@ public class Bullet : MonoBehaviour
     Rigidbody2D rb;
     bool launched = false;
     public float hitShakeStrength;
+    private float angle;
 
     public static Dictionary<int, Bullet> bullets = new Dictionary<int, Bullet>();
     public List<State> pastStates = new List<State>();
@@ -76,9 +77,9 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void Init(Vector3 newDir, float newBulletVelocity, int newBulletID, int newOwnerID, int newMinDmg, int newMaxDmg, Vector2 startPos, float newHitShakeStrength)
+    public void Init(Vector3 newDir, float newBulletVelocity, int newBulletID, int newOwnerID, int newMinDmg, int newMaxDmg, Vector2 startPos, float newHitShakeStrength, float newAngle)
     {
-        dir = newDir; bulletVelocity = newBulletVelocity; bulletID = newBulletID; ownerID = newOwnerID; minDmg = newMinDmg; maxDmg = newMaxDmg; transform.position = startPos; hitShakeStrength = newHitShakeStrength;
+        dir = newDir; bulletVelocity = newBulletVelocity; bulletID = newBulletID; ownerID = newOwnerID; minDmg = newMinDmg; maxDmg = newMaxDmg; transform.position = startPos; hitShakeStrength = newHitShakeStrength; angle = newAngle;
         bullets.Add(bulletID, this);
     }
 
@@ -95,6 +96,7 @@ public class Bullet : MonoBehaviour
         if (!launched)
         {
             rb.AddForce(dir * bulletVelocity, ForceMode2D.Impulse);
+            transform.eulerAngles = new Vector3(0, 0, angle);
             launched = true;
         }
     }

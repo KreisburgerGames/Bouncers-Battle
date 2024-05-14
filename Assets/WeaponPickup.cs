@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using FishNet.Connection;
 using FishNet;
+using UnityEngine.UI;
 
 public class WeaponPickup : NetworkBehaviour
 {
@@ -30,7 +31,7 @@ public class WeaponPickup : NetworkBehaviour
             if(collision.gameObject.tag == "Player")
             {
                 NetworkConnection playerCon = collision.gameObject.GetComponent<Player>().Owner;
-                Transform parent = collision.gameObject.transform;
+                Transform parent = collision.gameObject.GetComponentInChildren<AimRotation>().gameObject.transform;
                 ServerSpawnWeaponToPlayer(weapon, playerCon, this.gameObject, parent);
                 ServerSetCollected(this);
             }
