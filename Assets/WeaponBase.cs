@@ -15,7 +15,9 @@ public class WeaponBase : NetworkBehaviour
     public float fireCooldown;
     bool isBetweenShot;
     float cooldownTimer;
-    public Transform bulletExit;
+    public Transform normalBulletExit;
+    public Transform flippedBulletExit;
+    Transform bulletExit;
     public int minDmg;
     public int maxDmg;
     public float Knockback;
@@ -38,6 +40,7 @@ public class WeaponBase : NetworkBehaviour
         }
         owner = GetComponentInParent<Player>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
+        bulletExit = normalBulletExit;
     }
 
     public void Shoot()
@@ -100,16 +103,15 @@ public class WeaponBase : NetworkBehaviour
     
     void CheckFlip()
     {
-        Vector3 difference = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-        float rotZ = Mathf.Atan2(difference.x, difference.y) * Mathf.Rad2Deg;
-
-        if (rotZ < 89 && rotZ > -89)
+        if (transform.eulerAngles.z < 180 && transform.eulerAngles.z > -180)
         {
-            transform.rotation = Quaternion.Euler(transform.rotation.x, 0, transform.rotation.z);
+            GetComponent<SpriteRenderer>().flipX = true;
+            bulletExit = flippedBulletExit;
         }
         else
         {
-            transform.rotation = Quaternion.Euler(transform.rotation.x, 180, transform.rotation.z);
+            GetComponent<SpriteRenderer>().flipX = false;
+            bulletExit = normalBulletExit;
         }
     }
 
