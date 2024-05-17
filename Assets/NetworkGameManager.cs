@@ -16,7 +16,8 @@ public class NetworkGameManager : NetworkBehaviour
     private float weaponSpawnTime;
     int playerCount;
     bool spawnedWeapons = false;
-    public List<GameObject> weaponPickupPrefabs = new List<GameObject>();
+    public GameObject weaponPickupPrefab;
+    public List<GameObject> weaponPrefabs = new List<GameObject>();
     public float weaponSpawnPadding = .5f;
 
     public override void OnStartClient()
@@ -46,21 +47,28 @@ public class NetworkGameManager : NetworkBehaviour
             int weaponsToSpawn = playerCount - Random.Range(0, (int)Mathf.Floor(playerCount / 2));
             for (int i = 0; i < weaponsToSpawn; i++)
             {
-                GameObject weaponPickup =weaponPickupPrefabs[Random.Range(0, weaponPickupPrefabs.Count - 1)];
-                ServerSpawnWeaponPickup(weaponPickup);
+                GameObject chosenWeapon = weaponPrefabs[Random.Range(0, weaponPrefabs.Count - 1)];
+                ServerSpawnWeaponPickup(weaponPickupPrefab, chosenWeapon);
             }
             spawnedWeapons = true;
         }
     }
 
     [ServerRpc]
-    void ServerSpawnWeaponPickup(GameObject weaponPickupSpawn)
+    void ServerSpawnWeaponPickup(GameObject weaponPickupSpawn, GameObject weapon)
     {
         float width = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0f, 0f)), Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0f))) * 0.5f;
         float height = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0f, 0f)), Camera.main.ScreenToWorldPoint(new Vector2(0f, Screen.height))) * 0.5f;
         GameObject weaponSpawnPickupRef = Instantiate(weaponPickupSpawn);
         weaponSpawnPickupRef.transform.position = new Vector2(Random.Range(-width + weaponSpawnPadding, width - weaponSpawnPadding), Random.Range(-height + weaponSpawnPadding, height - weaponSpawnPadding));
         ServerManager.Spawn(weaponSpawnPickupRef);
+        SetWeaponPickup(weaponSpawnPickupRef.GetComponent<WeaponPickup>(), weapon);
+    }
+
+    [ObserversRpc]
+    void SetWeaponPickup(WeaponPickup pickup, GameObject weapon)
+    {
+        pickup.weapon = weapon;
     }
 
     [ServerRpc]

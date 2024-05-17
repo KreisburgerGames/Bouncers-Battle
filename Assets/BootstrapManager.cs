@@ -106,7 +106,7 @@ public class BootstrapManager : MonoBehaviour
         if(SteamMatchmaking.RequestLobbyData(steamID))
         {
             SteamMatchmaking.JoinLobby(steamID);
-            instance.fishySteamworks.SetClientAddress(SteamMatchmaking.GetLobbyData(steamID, "HostAdress"));
+            instance.fishySteamworks.SetClientAddress(SteamMatchmaking.GetLobbyData(steamID, "HostAddress"));
             instance.fishySteamworks.StartConnection(false);
             joinedByID = true;
         }

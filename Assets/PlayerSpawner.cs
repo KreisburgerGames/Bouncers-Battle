@@ -211,7 +211,7 @@ public class PlayerSpawner : NetworkBehaviour
     }
 
     [ServerRpc]
-    public void SpawnPlayer(NetworkConnection owner, PlayerSpawner spawner, GameObject networkGmPefabNetwork)
+    public void SpawnPlayer(NetworkConnection owner, PlayerSpawner spawner, GameObject networkGmPrefabNetwork)
     {
         GameObject playerSpawned = (GameObject)Instantiate(playerToSpawn, UnityEngine.SceneManagement.SceneManager.GetSceneByBuildIndex(2));
         float width = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0f, 0f)), Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0f))) * 0.5f;
@@ -221,7 +221,7 @@ public class PlayerSpawner : NetworkBehaviour
         ServerManager.Spawn(playerSpawned, ownerConnection: owner);
         if (spawner.server)
         {
-            GameObject networkGameManagerObj = Instantiate(networkGmPefabNetwork);
+            GameObject networkGameManagerObj = Instantiate(networkGmPrefabNetwork);
             ServerManager.Spawn(networkGameManagerObj, ownerConnection: spawner.Owner, scene: UnityEngine.SceneManagement.SceneManager.GetSceneByBuildIndex(2));
         }
     }

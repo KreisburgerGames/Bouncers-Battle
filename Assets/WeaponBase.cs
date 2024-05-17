@@ -1,3 +1,4 @@
+using System;
 using FishNet.Connection;
 using FishNet.Object;
 using System.Collections;
@@ -5,6 +6,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Player;
 using Cinemachine;
+using Random = UnityEngine.Random;
 
 public class WeaponBase : NetworkBehaviour
 {
@@ -24,9 +26,16 @@ public class WeaponBase : NetworkBehaviour
     public float visualRecoilForce = 1;
     CinemachineImpulseSource impulseSource;
     public float hitShakeStrength = 1f;
+    private bool isClient = false;
 
-    private void Awake()
+    public override void OnStartClient()
     {
+        base.OnStartClient();
+
+        if (base.IsOwner)
+        {
+            isClient = true;
+        }
         owner = GetComponentInParent<Player>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
     }
@@ -88,9 +97,30 @@ public class WeaponBase : NetworkBehaviour
         Bullet bullet = Instantiate(bulletPrefab, spawnPos, Quaternion.Euler(dir)).GetComponent<Bullet>();
         bullet.Init(dir, bulletVelocity, bulletID, ownerID, newMinDmg, newMaxDmg, startPos, hitShakeStrength, angle);
     }
+    
+    void CheckFlip()
+    {
+        Vector3 difference = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        float rotZ = Mathf.Atan2(difference.x, difference.y) * Mathf.Rad2Deg;
+
+        if (rotZ < 89 && rotZ > -89)
+        {
+            transform.rotation = Quaternion.Euler(transform.rotation.x, 0, transform.rotation.z);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Euler(transform.rotation.x, 180, transform.rotation.z);
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        CheckFlip();
+    }
 
     private void Update()
     {
+        if (!isClient) return;
         if (isBetweenShot)
         {
             if(Input.GetMouseButton(0))
