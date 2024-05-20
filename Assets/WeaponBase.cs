@@ -1,11 +1,7 @@
-using System;
-using FishNet.Connection;
 using FishNet.Object;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static Player;
 using Cinemachine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class WeaponBase : NetworkBehaviour
@@ -13,22 +9,21 @@ public class WeaponBase : NetworkBehaviour
     public int ammo;
     public bool isAutomatic;
     public float fireCooldown;
-    bool isBetweenShot;
-    float cooldownTimer;
+    bool _isBetweenShot;
+    float _cooldownTimer;
     public Transform normalBulletExit;
     public Transform flippedBulletExit;
-    Transform bulletExit;
+    Transform _bulletExit;
     public int minDmg;
     public int maxDmg;
-    public float Knockback;
-    bool isHolding = false;
+    [FormerlySerializedAs("Knockback")] public float knockback;
+    bool _isHolding;
     public GameObject bulletPrefab;
     public float bulletVelocity;
-    Player owner;
     public float visualRecoilForce = 1;
-    CinemachineImpulseSource impulseSource;
+    CinemachineImpulseSource _impulseSource;
     public float hitShakeStrength = 1f;
-    private bool isClient = false;
+    private bool _isClient;
 
     public override void OnStartClient()
     {
@@ -36,18 +31,17 @@ public class WeaponBase : NetworkBehaviour
 
         if (base.IsOwner)
         {
-            isClient = true;
+            _isClient = true;
         }
-        owner = GetComponentInParent<Player>();
-        impulseSource = GetComponent<CinemachineImpulseSource>();
-        bulletExit = normalBulletExit;
+        _impulseSource = GetComponent<CinemachineImpulseSource>();
+        _bulletExit = normalBulletExit;
     }
 
     public void Shoot()
     {
-        if (isBetweenShot || isHolding && !isAutomatic) { return; }
-        isBetweenShot = true;
-        Vector3 startPos = bulletExit.position;
+        if (_isBetweenShot || _isHolding && !isAutomatic) { return; }
+        _isBetweenShot = true;
+        Vector3 startPos = _bulletExit.position;
         Vector3 dir = transform.up;
 
         bool uniqueIDFound = false;
@@ -71,13 +65,18 @@ public class WeaponBase : NetworkBehaviour
                 bulletID = Random.Range(100000, 999999);
             }
         }
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
-        Vector3 aimingDir = (mousePos - transform.position).normalized;
-        float aimingAngle = Mathf.Atan2(aimingDir.y, aimingDir.x) * Mathf.Rad2Deg;
-        SpawnBulletLocal(startPos, dir, bulletID, Owner.ClientId, aimingAngle);
-        SpawnBullet(startPos, dir, TimeManager.Tick, GetComponentInParent<Player>(), Owner.ClientId, bulletID, minDmg, maxDmg, aimingAngle);
-        impulseSource.m_DefaultVelocity = dir.normalized;
-        impulseSource.GenerateImpulseWithForce(visualRecoilForce);
+
+        if (Camera.main != null)
+        {
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(UnityEngine.Input.mousePosition);
+            Vector3 aimingDir = (mousePos - transform.position).normalized;
+            float aimingAngle = Mathf.Atan2(aimingDir.y, aimingDir.x) * Mathf.Rad2Deg;
+            SpawnBulletLocal(startPos, dir, bulletID, Owner.ClientId, aimingAngle);
+            SpawnBullet(startPos, dir, TimeManager.Tick, GetComponentInParent<Player>(), Owner.ClientId, bulletID, minDmg, maxDmg, aimingAngle);
+        }
+
+        _impulseSource.m_DefaultVelocity = dir.normalized;
+        _impulseSource.GenerateImpulseWithForce(visualRecoilForce);
     }
     private void SpawnBulletLocal(Vector3 startPos, Vector3 dir, int newBulletID, int ownerID, float angle)
     {
@@ -95,7 +94,7 @@ public class WeaponBase : NetworkBehaviour
     private void SpawnBulletServer(Vector3 startPos, Vector3 dir, uint startTick, Player ownerRef, int bulletID, int ownerID, int newMinDmg, int newMaxDmg, float angle)
     {
         float timeDifference = (float)(TimeManager.Tick - startTick) / TimeManager.TickRate;
-        Vector3 spawnPos = startPos + dir * bulletVelocity * timeDifference;
+        Vector3 spawnPos = startPos + dir * (bulletVelocity * timeDifference);
 
         Bullet bullet = Instantiate(bulletPrefab, spawnPos, Quaternion.Euler(dir)).GetComponent<Bullet>();
         bullet.Init(dir, bulletVelocity, bulletID, ownerID, newMinDmg, newMaxDmg, startPos, hitShakeStrength, angle);
@@ -106,12 +105,12 @@ public class WeaponBase : NetworkBehaviour
         if (transform.eulerAngles.z < 180 && transform.eulerAngles.z > -180)
         {
             GetComponent<SpriteRenderer>().flipX = true;
-            bulletExit = flippedBulletExit;
+            _bulletExit = flippedBulletExit;
         }
         else
         {
             GetComponent<SpriteRenderer>().flipX = false;
-            bulletExit = normalBulletExit;
+            _bulletExit = normalBulletExit;
         }
     }
 
@@ -122,25 +121,25 @@ public class WeaponBase : NetworkBehaviour
 
     private void Update()
     {
-        if (!isClient) return;
-        if (isBetweenShot)
+        if (!_isClient) return;
+        if (_isBetweenShot)
         {
             if(Input.GetMouseButton(0))
             {
-                isHolding = true;
+                _isHolding = true;
             }
         }
         if (!Input.GetMouseButton(0))
         {
-            isHolding = false;
+            _isHolding = false;
         }
-        if(isBetweenShot)
+        if(_isBetweenShot)
         {
-            cooldownTimer += Time.deltaTime;
-            if(cooldownTimer >= fireCooldown)
+            _cooldownTimer += Time.deltaTime;
+            if(_cooldownTimer >= fireCooldown)
             {
-                isBetweenShot = false;
-                cooldownTimer = 0f;
+                _isBetweenShot = false;
+                _cooldownTimer = 0f;
             }
         }
     }
