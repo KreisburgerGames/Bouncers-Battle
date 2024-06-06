@@ -205,13 +205,13 @@ public class PlayerSpawner : NetworkBehaviour
         }
         if (SteamMatchmaking.GetLobbyData(new CSteamID(BootstrapManager.CurrentLobbyID), "Started") == "true" && !spawned)
         {
-            SpawnPlayer(this.Owner, this, networkGmPrefab);
+            SpawnPlayer(this.Owner, this, networkGmPrefab, FindFirstObjectByType<MainMenuManager>().testing);
             spawned = true;
         }
     }
 
     [ServerRpc]
-    public void SpawnPlayer(NetworkConnection owner, PlayerSpawner spawner, GameObject networkGmPrefabNetwork)
+    public void SpawnPlayer(NetworkConnection owner, PlayerSpawner spawner, GameObject networkGmPrefabNetwork, bool testing = false)
     {
         GameObject playerSpawned = (GameObject)Instantiate(playerToSpawn, UnityEngine.SceneManagement.SceneManager.GetSceneByBuildIndex(2));
         float width = Vector2.Distance(Camera.main.ScreenToWorldPoint(new Vector2(0f, 0f)), Camera.main.ScreenToWorldPoint(new Vector2(Screen.width, 0f))) * 0.5f;
@@ -223,6 +223,10 @@ public class PlayerSpawner : NetworkBehaviour
         {
             GameObject networkGameManagerObj = Instantiate(networkGmPrefabNetwork);
             ServerManager.Spawn(networkGameManagerObj, ownerConnection: spawner.Owner, scene: UnityEngine.SceneManagement.SceneManager.GetSceneByBuildIndex(2));
+            if(testing)
+            {
+                networkGameManagerObj.GetComponent<NetworkGameManager>().debug = true;
+            }
         }
     }
 }

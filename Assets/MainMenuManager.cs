@@ -22,12 +22,15 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private TMP_Text lobbyTitle, lobbyIDText;
     [SerializeField] private Button startGameButton;
     [SerializeField] private TMP_Text toggleReadyText;
+    [SerializeField] private GameObject needMorePlayers;
     private PlayerSpawner localPlayer;
     bool canFindPlayer = true;
     public float findPlayerLeaveBuffer = 1f;
     float findPlayerLeaveBufferTimer = 0f;
     bool localPlayerFound = false;
+    private bool doNeedMorePlayers = false;
     public Menu currentScreen = Menu.Main;
+    public bool testing;
 
     public enum Menu
     {
@@ -89,7 +92,25 @@ public class MainMenuManager : MonoBehaviour
                 findPlayerLeaveBufferTimer = 0f;
             }
         }
+        CheckPlayers();
         CheckReady();
+    }
+
+    void CheckPlayers()
+    {
+        if (localPlayer != null)
+        {
+            if (localPlayer.players > 1 && localPlayer.server)
+            {
+                needMorePlayers.SetActive(false);
+                doNeedMorePlayers = false;
+            }
+            else
+            {
+                needMorePlayers.SetActive(true);
+                doNeedMorePlayers = true;
+            }
+        }
     }
 
     void CheckReady()
@@ -101,6 +122,11 @@ public class MainMenuManager : MonoBehaviour
             {
                 canStart = false;
             }
+        }
+
+        if (localPlayer.server && doNeedMorePlayers && !testing)
+        {
+            canStart = false;
         }
         if (canStart)
         {

@@ -18,7 +18,9 @@ public class NetworkGameManager : NetworkBehaviour
     bool spawnedWeapons = false;
     public GameObject weaponPickupPrefab;
     public List<GameObject> weaponPrefabs = new List<GameObject>();
+    public List<Player> players = new List<Player>();
     public float weaponSpawnPadding = .5f;
+    public bool debug = false;
 
     public override void OnStartClient()
     {
@@ -52,6 +54,9 @@ public class NetworkGameManager : NetworkBehaviour
             }
             spawnedWeapons = true;
         }
+        if(debug) return;
+        // Game Loop
+        
     }
 
     [ServerRpc]
