@@ -78,7 +78,7 @@ GameObject:
   - component: {fileID: 3339886922688358805}
   m_Layer: 0
   m_Name: Weapon Base
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -315,7 +315,7 @@ MonoBehaviour:
   flippedBulletExit: {fileID: 4736234099747573685}
   minDmg: 15
   maxDmg: 30
-  Knockback: 1
+  knockback: 1
   bulletPrefab: {fileID: 170948063539565404, guid: c8a0a24110431de48b80157a120e9304, type: 3}
   bulletVelocity: 20
   visualRecoilForce: 1

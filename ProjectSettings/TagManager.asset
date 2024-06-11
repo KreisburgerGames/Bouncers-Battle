@@ -6,6 +6,7 @@ TagManager:
   tags:
   - PlayerListContent
   - Barrier
+  - Weapon
   layers:
   - Default
   - TransparentFX
